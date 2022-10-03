@@ -17,8 +17,7 @@ const setUpDatabase = async () => {
             port: DB_PORT,
         });
 
-        await connection.query(`DROP DATABASE ${DB_NAME}`);
-        connection.end()
+        connection.query(`DROP DATABASE ${DB_NAME}`, () => connection.end());
 
     } catch (err) {
         // if something goes wrong, console.log the error and the current environment variables
@@ -36,4 +35,4 @@ const setUpDatabase = async () => {
     }
 };
 
-setUpDatabase();
+setUpDatabase()
