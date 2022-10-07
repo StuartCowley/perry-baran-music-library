@@ -27,7 +27,7 @@ const setUpDatabase = async () => {
 
     // create the database if it doesn't already exist
     await db.query(`CREATE DATABASE IF NOT EXISTS ${DB_NAME}`);
-    
+
     //configure database
     await db.query(`USE ${DB_NAME}`);
     await db.query(`CREATE TABLE IF NOT EXISTS Artist (
@@ -37,7 +37,6 @@ const setUpDatabase = async () => {
     )`);
 
     db.close();
-
   } catch (err) {
     console.log(
       `Your environment variables might be wrong. Please double check .env file`

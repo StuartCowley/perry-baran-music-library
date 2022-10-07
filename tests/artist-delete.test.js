@@ -39,9 +39,10 @@ describe('delete artist', () => {
 
         expect(res.status).to.equal(200);
 
-        const [
-          [deletedArtistRecord],
-        ] = await db.query('SELECT * FROM Artist WHERE id = ?', [artist.id]);
+        const [[deletedArtistRecord]] = await db.query(
+          'SELECT * FROM Artist WHERE id = ?',
+          [artist.id]
+        );
 
         expect(!!deletedArtistRecord).to.be.false;
       });

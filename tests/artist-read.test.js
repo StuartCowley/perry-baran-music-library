@@ -48,7 +48,7 @@ describe('read artist', () => {
       });
     });
   });
-  
+
   describe('/artist/:artistId', () => {
     describe('GET', () => {
       it('returns a single artist with the correct id', async () => {
@@ -67,4 +67,3 @@ describe('read artist', () => {
     });
   });
 });
-
