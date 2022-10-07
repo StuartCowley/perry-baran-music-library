@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/', controller.post);
 router.get('/', controller.get);
+router.get('/:artistId', controller.getById)
 
 module.exports = router;
