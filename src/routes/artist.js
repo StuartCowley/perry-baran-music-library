@@ -7,5 +7,6 @@ router.post('/', controller.post);
 router.get('/', controller.get);
 router.get('/:artistId', controller.getById);
 router.patch('/:artistId', controller.patch);
+router.delete('/:artistId', controller.delete);
 
 module.exports = router;

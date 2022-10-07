@@ -48,7 +48,7 @@ exports.patch = async (req, res) => {
     const data = req.body
 
     try {
-        const [{ affectedRows }] = await db.query(`UPDATE Artist SET ? WHERE id = ?`, [data,artistId]);
+        const [{ affectedRows }] = await db.query(`UPDATE Artist SET ? WHERE id = ?`, [data, artistId]);
 
         if (affectedRows) {
             res.status(200).send();
@@ -60,5 +60,25 @@ exports.patch = async (req, res) => {
         res.status(500).send();
     }
     
+    db.close();
+};
+
+exports.delete = async (req, res) => {
+    const db = await getDb();
+    const { artistId } = req.params;
+
+    try {
+        const [{ affectedRows }] = await db.query(`DELETE FROM Artist WHERE id = ?`, [artistId]);
+        
+        if (affectedRows) {
+            res.status(200).send();
+        } else {
+            res.status(404).send();
+        }
+
+    } catch (err) {
+        res.status(500).send();
+    }
+
     db.close();
 };
