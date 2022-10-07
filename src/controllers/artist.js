@@ -31,14 +31,33 @@ exports.getById = async (req, res) => {
     const db = await getDb();
     const { artistId } = req.params;
     
-    const [[artist]] = await db.query('SELECT * FROM Artist WHERE id=?', [
-        artistId
-    ]);
+    const [[artist]] = await db.query(`SELECT * FROM Artist WHERE id = ?`, [artistId]);
     
     if (artist) {
         res.status(200).json(artist);
     } else {
         res.status(404).send();
+    }
+    
+    db.close();
+};
+
+exports.patch = async (req, res) => {
+    const db = await getDb();
+    const { artistId } = req.params;
+    const data = req.body
+
+    try {
+        const [{ affectedRows }] = await db.query(`UPDATE Artist SET ? WHERE id = ?`, [data,artistId]);
+
+        if (affectedRows) {
+            res.status(200).send();
+        } else {
+            res.status(404).send();
+        }
+        
+    } catch (err) {
+        res.status(500).send();
     }
     
     db.close();
