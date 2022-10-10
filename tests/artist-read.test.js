@@ -38,7 +38,7 @@ describe('read artist', () => {
         const res = await request(app).get('/artist').send();
 
         expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(3);
+        expect(res.body.length).to.equal(artists.length);
 
         res.body.forEach((artistRecord) => {
           const expected = artists.find(

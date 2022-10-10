@@ -66,12 +66,46 @@ describe('read album', () => {
         const res = await request(app).get('/album').send();
 
         expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(4);
+        expect(res.body.length).to.equal(albums.length);
 
         res.body.forEach((albumRecord) => {
           const expected = albums.find((album) => album.id === albumRecord.id);
 
           expect(albumRecord).to.deep.equal(expected);
+        });
+      });
+    });
+  });
+
+  describe('album/:albumId', () => {
+    describe('GET', () => {
+      it('returns a single album with the correct id', async () => {
+          const expected = albums[0]
+          const res = await request(app).get(`/album/${expected.id}`).send();
+          
+          expect(res.status).to.equal(200);
+          expect(res.body).to.deep.equal(expected);
+      });
+    });
+
+    it('returns a 404 if the album is not in the database', async () => {
+      const res = await request(app).get('/artist/999999').send();
+
+      expect(res.status).to.equal(404);
+    });
+  });
+
+  describe('artist/:artistId/album', () => {
+    describe('GET', () => {
+      it('returns all albums records of an artist in the database', async () => {
+        const { id: artistId } = artists[0];
+        const res = await request(app).get(`/artist/${artistId}/album`).send();
+
+        expect(res.status).to.equal(200);
+        expect(res.body.length).to.equal(2);
+
+        res.body.forEach((albumRecord) => {
+          expect(albumRecord.artistId).to.equal(artistId);
         });
       });
     });

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', albumController.getAll);
 
-//router.get('/:albumId', albumController.getById);
+router.get('/:albumId', albumController.getById);
 
 //router.patch('/albumId', albumController.patch);
 
