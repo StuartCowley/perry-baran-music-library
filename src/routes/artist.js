@@ -4,7 +4,7 @@ const albumController = require('../controllers/album');
 
 const router = express.Router();
 
-router.get('/', artistController.get);
+router.get('/', artistController.getAll);
 
 router.post('/', artistController.post);
 

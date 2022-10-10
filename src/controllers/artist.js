@@ -17,7 +17,7 @@ exports.post = async (req, res) => {
   db.close();
 };
 
-exports.get = async (req, res) => {
+exports.getAll = async (req, res) => {
   const db = await getDb();
   try {
     const [artists] = await db.query('SELECT * FROM Artist');

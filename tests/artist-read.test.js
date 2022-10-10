@@ -41,7 +41,9 @@ describe('read artist', () => {
         expect(res.body.length).to.equal(3);
 
         res.body.forEach((artistRecord) => {
-          const expected = artists.find((a) => a.id === artistRecord.id);
+          const expected = artists.find(
+            (artist) => artist.id === artistRecord.id
+          );
 
           expect(artistRecord).to.deep.equal(expected);
         });
