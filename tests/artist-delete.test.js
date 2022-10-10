@@ -6,6 +6,7 @@ const app = require('../src/app');
 describe('delete artist', () => {
   let db;
   let artists;
+
   beforeEach(async () => {
     db = await getDb();
     await Promise.all([
@@ -34,14 +35,14 @@ describe('delete artist', () => {
   describe('/artist/:artistId', () => {
     describe('DELETE', () => {
       it('deletes a single artist with the correct id', async () => {
-        const artist = artists[0];
-        const res = await request(app).delete(`/artist/${artist.id}`).send();
+        const { id: artistId } = artists[0];
+        const res = await request(app).delete(`/artist/${artistId}`).send();
 
         expect(res.status).to.equal(200);
 
         const [[deletedArtistRecord]] = await db.query(
           'SELECT * FROM Artist WHERE id = ?',
-          [artist.id]
+          [artistId]
         );
 
         expect(!!deletedArtistRecord).to.be.false;

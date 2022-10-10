@@ -7,8 +7,8 @@ router.get('/', albumController.getAll);
 
 router.get('/:albumId', albumController.getById);
 
-//router.patch('/albumId', albumController.patch);
+router.patch('/:albumId', albumController.patch);
 
-//router.delete('/:albumId', albumController.delete);
+router.delete('/:albumId', albumController.delete);
 
 module.exports = router;

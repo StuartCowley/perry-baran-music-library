@@ -6,6 +6,7 @@ const app = require('../src/app');
 describe('update artist', () => {
   let db;
   let artists;
+
   beforeEach(async () => {
     db = await getDb();
     await Promise.all([
@@ -34,19 +35,20 @@ describe('update artist', () => {
   describe('/artist/:artistId', () => {
     describe('PATCH', () => {
       it('updates a single artist with the correct id', async () => {
-        const artist = artists[0];
+        const { id: artistId } = artists[0];
         const res = await request(app)
-          .patch(`/artist/${artist.id}`)
+          .patch(`/artist/${artistId}`)
           .send({ name: 'new name', genre: 'new genre' });
 
         expect(res.status).to.equal(200);
 
         const [[newArtistRecord]] = await db.query(
           'SELECT * FROM Artist WHERE id = ?',
-          [artist.id]
+          [artistId]
         );
 
         expect(newArtistRecord.name).to.equal('new name');
+        expect(newArtistRecord.genre).to.equal('new genre');
       });
 
       it('returns a 404 if the artist is not in the database', async () => {

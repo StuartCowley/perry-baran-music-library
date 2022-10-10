@@ -35,18 +35,17 @@ exports.getById = async (req, res) => {
 
   try {
     const [[artist]] = await db.query(`SELECT * FROM Artist WHERE id = ?`, [
-        artistId,
-      ]);
+      artistId,
+    ]);
 
-      if (artist) {
-        res.status(200).json(artist);
-      } else {
-        res.status(404).send();
-      }
+    if (!artist) {
+      res.status(404).send();
+    } else {
+      res.status(200).json(artist);
+    }
   } catch (err) {
     res.status(500).json(err);
   }
-  
 
   db.close();
 };
@@ -62,10 +61,10 @@ exports.patch = async (req, res) => {
       [data, artistId]
     );
 
-    if (affectedRows) {
-      res.status(200).send();
-    } else {
+    if (!affectedRows) {
       res.status(404).send();
+    } else {
+      res.status(200).send();
     }
   } catch (err) {
     res.status(500).send();
@@ -84,10 +83,10 @@ exports.delete = async (req, res) => {
       [artistId]
     );
 
-    if (affectedRows) {
-      res.status(200).send();
-    } else {
+    if (!affectedRows) {
       res.status(404).send();
+    } else {
+      res.status(200).send();
     }
   } catch (err) {
     res.status(500).send();

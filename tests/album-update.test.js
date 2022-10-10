@@ -3,7 +3,7 @@ const request = require('supertest');
 const getDb = require('../src/services/db');
 const app = require('../src/app');
 
-describe('read album', () => {
+describe('update album', () => {
   let db;
   let artists;
   let albums;
@@ -60,54 +60,32 @@ describe('read album', () => {
     await db.close();
   });
 
-  describe('/album', () => {
-    describe('GET', () => {
-      it('returns all album records in the database', async () => {
-        const res = await request(app).get('/album').send();
+  describe('/album/:albumId', () => {
+    describe('PATCH', () => {
+      it('updates a single album with the correct id', async () => {
+        const { id: albumId } = albums[0];
+        const res = await request(app)
+          .patch(`/album/${albumId}`)
+          .send({ name: 'Lysergic', year: 2020 });
 
         expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(albums.length);
 
-        res.body.forEach((albumRecord) => {
-          const expected = albums.find((album) => album.id === albumRecord.id);
+        const [[newAlbumRecord]] = await db.query(
+          `SELECT * FROM Album WHERE id = ?`,
+          [albumId]
+        );
 
-          expect(albumRecord).to.deep.equal(expected);
-        });
-      });
-    });
-  });
-
-  describe('album/:albumId', () => {
-    describe('GET', () => {
-      it('returns a single album with the correct id', async () => {
-        const expected = albums[0];
-        const res = await request(app).get(`/album/${expected.id}`).send();
-
-        expect(res.status).to.equal(200);
-        expect(res.body).to.deep.equal(expected);
+        expect(newAlbumRecord.name).to.equal('Lysergic');
+        expect(newAlbumRecord.year).to.equal(2020);
       });
     });
 
     it('returns a 404 if the album is not in the database', async () => {
-      const res = await request(app).get('/artist/999999').send();
+      const res = await request(app)
+        .patch('/album/999999')
+        .send({ name: 'test' });
 
       expect(res.status).to.equal(404);
-    });
-  });
-
-  describe('artist/:artistId/album', () => {
-    describe('GET', () => {
-      it('returns all albums records of an artist in the database', async () => {
-        const { id: artistId } = artists[0];
-        const res = await request(app).get(`/artist/${artistId}/album`).send();
-
-        expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(2);
-
-        res.body.forEach((albumRecord) => {
-          expect(albumRecord.artistId).to.equal(artistId);
-        });
-      });
     });
   });
 });

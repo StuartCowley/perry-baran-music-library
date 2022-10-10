@@ -1,4 +1,3 @@
-const { restart } = require('nodemon');
 const getDb = require('../services/db');
 
 exports.post = async (req, res) => {
@@ -47,13 +46,13 @@ exports.getById = async (req, res) => {
 
   try {
     const [[album]] = await db.query(`SELECT * FROM Album WHERE id = ?`, [
-      albumId
+      albumId,
     ]);
 
-    if (album) {
-      res.status(200).json(album);
-    } else {
+    if (!album) {
       res.status(404).send();
+    } else {
+      res.status(200).json(album);
     }
   } catch (err) {
     res.status(500).json(err);
@@ -68,16 +67,61 @@ exports.getAllByArtistId = async (req, res) => {
 
   try {
     const [albums] = await db.query(`SELECT * FROM Album WHERE artistId = ?`, [
-      artistId
+      artistId,
     ]);
 
-    if (albums) {
-      res.status(200).json(albums);
-    } else {
+    if (!albums) {
       res.status(404).send();
+    } else {
+      res.status(200).json(albums);
     }
   } catch (err) {
     res.status(500).json(err);
+  }
+
+  db.close();
+};
+
+exports.patch = async (req, res) => {
+  const db = await getDb();
+  const { albumId } = req.params;
+  const data = req.body;
+
+  try {
+    const [{ affectedRows }] = await db.query(
+      `UPDATE Album SET ? WHERE id = ?`,
+      [data, albumId]
+    );
+
+    if (!affectedRows) {
+      res.status(404).send();
+    } else {
+      res.status(200).send();
+    }
+  } catch (err) {
+    res.staus(500).send();
+  }
+
+  db.close();
+};
+
+exports.delete = async (req, res) => {
+  const db = await getDb();
+  const { albumId } = req.params;
+
+  try {
+    const [{ affectedRows }] = await db.query(
+      `DELETE FROM Album WHERE id = ?`,
+      [albumId]
+    );
+
+    if (!affectedRows) {
+      res.status(404).send();
+    } else {
+      res.status(200).send();
+    }
+  } catch (err) {
+    res.status(500).send();
   }
 
   db.close();

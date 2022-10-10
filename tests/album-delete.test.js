@@ -3,7 +3,7 @@ const request = require('supertest');
 const getDb = require('../src/services/db');
 const app = require('../src/app');
 
-describe('read album', () => {
+describe('delete album', () => {
   let db;
   let artists;
   let albums;
@@ -60,54 +60,25 @@ describe('read album', () => {
     await db.close();
   });
 
-  describe('/album', () => {
-    describe('GET', () => {
-      it('returns all album records in the database', async () => {
-        const res = await request(app).get('/album').send();
+  describe('/album/:albumId', () => {
+    it('deletes a single album with the correct id', async () => {
+      const { id: albumId } = albums[0];
+      const res = await request(app).delete(`/album/${albumId}`).send();
 
-        expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(albums.length);
+      expect(res.status).to.equal(200);
 
-        res.body.forEach((albumRecord) => {
-          const expected = albums.find((album) => album.id === albumRecord.id);
+      const [[deletedAlbumRecord]] = await db.query(
+        'SELECT * FROM Album WHERE id = ?',
+        [albumId]
+      );
 
-          expect(albumRecord).to.deep.equal(expected);
-        });
-      });
-    });
-  });
-
-  describe('album/:albumId', () => {
-    describe('GET', () => {
-      it('returns a single album with the correct id', async () => {
-        const expected = albums[0];
-        const res = await request(app).get(`/album/${expected.id}`).send();
-
-        expect(res.status).to.equal(200);
-        expect(res.body).to.deep.equal(expected);
-      });
+      expect(!!deletedAlbumRecord).to.be.false;
     });
 
     it('returns a 404 if the album is not in the database', async () => {
-      const res = await request(app).get('/artist/999999').send();
+      const res = await request(app).delete('/album/999999').send();
 
       expect(res.status).to.equal(404);
-    });
-  });
-
-  describe('artist/:artistId/album', () => {
-    describe('GET', () => {
-      it('returns all albums records of an artist in the database', async () => {
-        const { id: artistId } = artists[0];
-        const res = await request(app).get(`/artist/${artistId}/album`).send();
-
-        expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(2);
-
-        res.body.forEach((albumRecord) => {
-          expect(albumRecord.artistId).to.equal(artistId);
-        });
-      });
     });
   });
 });
