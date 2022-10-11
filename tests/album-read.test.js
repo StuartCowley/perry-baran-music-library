@@ -104,9 +104,8 @@ describe('read album', () => {
         expect(res.status).to.equal(200);
         expect(res.body.length).to.equal(2);
 
-        res.body.forEach((albumRecord) => {
-          expect(albumRecord.artistId).to.equal(artistId);
-        });
+        const expectedAlbums = albums.filter(album => album.artistId === artistId);
+        expect(res.body).to.deep.equal(expectedAlbums);
       });
     });
   });
