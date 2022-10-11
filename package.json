@@ -9,7 +9,7 @@
     "posttest": "node utils/drop-database.js",
     "prestart": "node utils/create-database.js",
     "start": "nodemon -r dotenv/config index.js",
-    "pretty": "npx prettier --write ."
+    "prettier": "npx prettier --write ."
   },
   "repository": {
     "type": "git",
