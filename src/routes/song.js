@@ -9,4 +9,6 @@ router.get('/:songId', songController.getById);
 
 router.patch('/:songId', songController.patch);
 
+router.delete('/:songId', songController.delete);
+
 module.exports = router;

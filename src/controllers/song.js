@@ -124,4 +124,26 @@ exports.patch = async (req, res) => {
   }
   
   db.close();
-}
+};
+
+exports.delete = async (req, res) => {
+  const db = await getDb();
+  const { songId } = req.params;
+
+  try {
+    const [{ affectedRows }] = await db.query(
+      `DELETE FROM Song WHERE id = ?`,
+      [songId]
+    );
+
+    if (!affectedRows) {
+      res.status(404).send();
+    } else {
+      res.status(200).send();
+    }
+  } catch (err) {
+    res.status(500).send();
+  }
+
+  db.close();
+};

@@ -61,24 +61,26 @@ describe('delete album', () => {
   });
 
   describe('/album/{albumId}', () => {
-    it('deletes a single album with the correct id', async () => {
-      const { id: albumId } = albums[0];
-      const res = await request(app).delete(`/album/${albumId}`).send();
+    describe('DELETE', () => {
+      it('deletes a single album with the correct id', async () => {
+        const { id: albumId } = albums[0];
+        const res = await request(app).delete(`/album/${albumId}`).send();
 
-      expect(res.status).to.equal(200);
+        expect(res.status).to.equal(200);
 
-      const [[deletedAlbumRecord]] = await db.query(
-        'SELECT * FROM Album WHERE id = ?',
-        [albumId]
-      );
+        const [[deletedAlbumRecord]] = await db.query(
+          'SELECT * FROM Album WHERE id = ?',
+          [albumId]
+        );
 
-      expect(!!deletedAlbumRecord).to.be.false;
-    });
+        expect(!!deletedAlbumRecord).to.be.false;
+      });
 
-    it('returns a 404 if the album is not in the database', async () => {
-      const res = await request(app).delete('/album/999999').send();
+      it('returns a 404 if the album is not in the database', async () => {
+        const res = await request(app).delete('/album/999999').send();
 
-      expect(res.status).to.equal(404);
+        expect(res.status).to.equal(404);
+      });
     });
   });
 });
