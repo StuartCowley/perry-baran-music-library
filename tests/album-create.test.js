@@ -10,7 +10,7 @@ describe('create album', () => {
   beforeEach(async () => {
     db = await getDb();
 
-    await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+    await db.query('INSERT INTO Artist (name, genre) VALUES (?, ?)', [
       'Jenico',
       'Electronic',
     ]);
@@ -23,13 +23,13 @@ describe('create album', () => {
     await db.close();
   });
 
-  describe('/album', () => {
+  describe('/artist/{artistId}/album`', () => {
     describe('POST', () => {
       it('creates a new album in the database if artist exists', async () => {
-        const artist = artists[0];
-        const res = await request(app).post(`/artist/${artist.id}/album`).send({
+        const { id: artistId } = artists[0];
+        const res = await request(app).post(`/artist/${artistId}/album`).send({
           name: 'Dreaming of Detuned Love',
-          year: '2021',
+          year: 2021,
         });
 
         expect(res.status).to.equal(201);
@@ -38,15 +38,14 @@ describe('create album', () => {
           `SELECT * FROM Album WHERE name = 'Dreaming of Detuned Love'`
         );
 
-        expect(albumEntries.name).to.equal('Dreaming of Detuned Love');
         expect(albumEntries.year).to.equal(2021);
-        expect(albumEntries.artistId).to.equal(artist.id);
+        expect(albumEntries.artistId).to.equal(artistId);
       });
 
       it('returns a 404 if the artist is not in the database', async () => {
         const res = await request(app).post(`/artist/999999999/album`).send({
           name: 'Dreaming of Detuned Love',
-          year: '2021',
+          year: 2021,
         });
 
         expect(res.status).to.equal(404);

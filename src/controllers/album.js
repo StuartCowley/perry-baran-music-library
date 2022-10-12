@@ -14,7 +14,7 @@ exports.post = async (req, res) => {
       res.status(404).send();
     } else {
       await db.query(
-        `INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`,
+        `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
         [name, year, artistId]
       );
 
