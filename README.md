@@ -6,6 +6,13 @@ Implements Test-Driven development using Mocha and Chai.
 
 Created as part of the Manchester Codes full-stack web development boot-camp.
 
+## Table of Contents
+
+1. [Dependencies](#dependencies)
+2. [Setup](#setup)
+3. [Routes](#routes)
+4. [Attribution](#attribution)
+
 ## Dependencies
 
 - [Express.js](https://expressjs.com/)
@@ -89,11 +96,9 @@ $ npm run prettier
 
 ## Routes
 
-### GET /artist
+### /artist
 
-return all artists.
-
-### POST /artist
+#### POST /artist
 
 Creates a new artist. Body must be sent as JSON following this schema:
 
@@ -104,11 +109,16 @@ Creates a new artist. Body must be sent as JSON following this schema:
 }
 ```
 
-### GET /artist/{artistId}
+#### GET /artist
+
+return all artists.
+
+
+#### GET /artist/{artistId}
 
 Gets the artist with the specifed ID.
 
-### PATCH /artist/{artistId}
+#### PATCH /artist/{artistId}
 
 Updates an artist with the specified ID when passed JSON follwing this schema. `?` denotes optional variables:
 
@@ -119,13 +129,13 @@ Updates an artist with the specified ID when passed JSON follwing this schema. `
 }
 ```
 
-### DELETE /artist/{artistId}
+#### DELETE /artist/{artistId}
 
-Deletes the artist with the specified ID and all associated albums.
+Deletes the artist with the specified ID and all associated albums and songs.
 
-### POST /artist/{artistId}/album
+#### POST /artist/{artistId}/album
 
-Creates a new album that was created by the artist with the specified ID, when passed a JSON body that follows the following schema:
+Creates a new album and links it to the artist with the specified ID, when passed a JSON body that follows the following schema:
 
 ```
 {
@@ -134,19 +144,25 @@ Creates a new album that was created by the artist with the specified ID, when p
 }
 ```
 
-### GET /artist/{artistId}/album
+#### GET /artist/{artistId}/album
 
-Gets all albums that are assoccciated with the artist with the specified ID.
+Gets all albums that are linked with the artist with the specified ID.
 
-### GET /album
+#### GET /artist/{artistId}/song
+
+Gets all songs that are linked with the artist with the specified ID.
+
+### /album
+
+#### GET /album
 
 returns all albums.
 
-### GET /album/{albumId}
+#### GET /album/{albumId}
 
-Gets all albums with the specified ID.
+Gets the album with the specified ID.
 
-### PATCH /album/{albumId}
+#### PATCH /album/{albumId}
 
 Updates an album with the specified ID when passed JSON following this schema. `?` denotes optional variables::
 
@@ -157,9 +173,49 @@ Updates an album with the specified ID when passed JSON following this schema. `
 }
 ```
 
-### DELETE /album/{albumId}
+#### DELETE /album/{albumId}
 
-Deletes an album with the specified ID.
+Deletes the album with the specified ID.
+
+#### POST /album/{albumId}/song
+
+Creates a new song and links it to the album with the specified ID, when passed a JSON body that follows the following schema:
+
+```
+{
+    "name": STRING,
+    "position": INTEGER
+}
+```
+
+#### GET /album/{albumId}/song
+
+Gets all songs that are linked with the album with the specified ID.
+
+### /song
+
+#### GET /song
+
+returns all songs.
+
+#### GET /song/{songId}
+
+Gets the song with the specified ID.
+
+#### PATCH /song/{songId}
+
+Updates the song with the specified ID when passed JSON following this schema. `?` denotes optional variables::
+
+```
+{
+    "name"?: STRING,
+    "position"?: INTEGER
+}
+```
+
+#### DELETE /song/{songId}
+
+Deletes the song with the specified ID.
 
 ## Attribution
 
