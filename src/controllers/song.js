@@ -102,3 +102,26 @@ exports.getAllByAlbumId = async (req, res) => {
 
   db.close();
 };
+
+exports.patch = async (req, res) => {
+  const db = await getDb();
+  const { songId } = req.params;
+  const data = req.body;
+
+  try {
+    const [{ affectedRows }] = await db.query(
+      `UPDATE Song SET ? WHERE id = ?`,
+      [data, songId]
+    );
+
+    if (!affectedRows) {
+      res.status(404).send();
+    } else {
+      res.status(200).send();
+    }
+  } catch (err) {
+    res.staus(500).send();
+  }
+  
+  db.close();
+}

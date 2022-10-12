@@ -7,4 +7,6 @@ router.get('/', songController.getAll);
 
 router.get('/:songId', songController.getById);
 
+router.patch('/:songId', songController.patch);
+
 module.exports = router;
