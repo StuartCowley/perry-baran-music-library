@@ -12,15 +12,15 @@ describe('delete album', () => {
     db = await getDb();
 
     await Promise.all([
-      db.query(`INSERT INTO Artist (name, genre) VALUES(?, ?)`, [
+      db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
         'Jenico',
         'Electronic',
       ]),
-      db.query(`INSERT INTO Artist (name, genre) VALUES(?, ?)`, [
+      db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
         'Tame Impala',
         'rock',
       ]),
-      db.query(`INSERT INTO Artist (name, genre) VALUES(?, ?)`, [
+      db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
         'Jasmine Myra',
         'Jazz',
       ]),
@@ -60,7 +60,7 @@ describe('delete album', () => {
     await db.close();
   });
 
-  describe('/album/:albumId', () => {
+  describe('/album/{albumId}', () => {
     it('deletes a single album with the correct id', async () => {
       const { id: albumId } = albums[0];
       const res = await request(app).delete(`/album/${albumId}`).send();

@@ -29,22 +29,22 @@ describe('update album', () => {
     [artists] = await db.query('SELECT * from Artist');
 
     await Promise.all([
-      db.query(`INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`, [
+      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
         'Dreaming of Detuned Love',
         2021,
         artists[0].id,
       ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`, [
+      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
         'Ethereal',
         2019,
         artists[0].id,
       ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`, [
+      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
         'Currents',
         2015,
         artists[1].id,
       ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`, [
+      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
         'Horizons',
         2022,
         artists[2].id,
@@ -60,7 +60,7 @@ describe('update album', () => {
     await db.close();
   });
 
-  describe('/album/:albumId', () => {
+  describe('/album/{albumId}', () => {
     describe('PATCH', () => {
       it('updates a single album with the correct id', async () => {
         const { id: albumId } = albums[0];

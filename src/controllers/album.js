@@ -70,7 +70,7 @@ exports.getAllByArtistId = async (req, res) => {
       artistId,
     ]);
 
-    if (!albums) {
+    if (albums.length === 0) {
       res.status(404).send();
     } else {
       res.status(200).json(albums);

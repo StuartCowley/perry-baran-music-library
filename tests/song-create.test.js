@@ -40,7 +40,7 @@ describe('create song', () => {
         const [{ id: artistId }] = artists;
         const res = await request(app).post(`/album/${albumId}/song`).send({
           name: 'Slumber',
-          length: 98,
+          position: 0,
         });
 
         expect(res.status).to.equal(201);
@@ -49,9 +49,18 @@ describe('create song', () => {
           `SELECT * FROM Song WHERE name = 'Slumber'`
         );
 
-        expect(songEntries.length).to.equal(98);
+        expect(songEntries.position).to.equal(0);
         expect(songEntries.albumId).to.equal(albumId);
         expect(songEntries.artistId).to.equal(artistId);
+      });
+
+      it('returns a 404 if the album is not in the database', async () => {
+        const res = await request(app).post(`/album/999999999/song`).send({
+          name: 'Slumber',
+          length: 98,
+        });
+
+        expect(res.status).to.equal(404);
       });
     });
   });

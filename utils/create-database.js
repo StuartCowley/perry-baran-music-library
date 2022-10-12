@@ -48,7 +48,7 @@ const setUpDatabase = async () => {
     await db.query(`CREATE TABLE IF NOT EXISTS Song (
       id INT PRIMARY KEY auto_increment,
       name VARCHAR(25),
-      length INT,
+      position INT,
       artistId INT,
       albumId INT,
       FOREIGN KEY (artistId) REFERENCES Artist(id) ON DELETE CASCADE,

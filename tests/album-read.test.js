@@ -29,25 +29,20 @@ describe('read album', () => {
     [artists] = await db.query('SELECT * from Artist');
 
     await Promise.all([
-      db.query(`INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`, [
+      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
         'Dreaming of Detuned Love',
         2021,
         artists[0].id,
       ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`, [
+      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
         'Ethereal',
         2019,
         artists[0].id,
       ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`, [
+      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
         'Currents',
         2015,
         artists[1].id,
-      ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUE (?, ?, ?)`, [
-        'Horizons',
-        2022,
-        artists[2].id,
       ]),
     ]);
 
@@ -77,7 +72,7 @@ describe('read album', () => {
     });
   });
 
-  describe('album/:albumId', () => {
+  describe('album/{albumId}', () => {
     describe('GET', () => {
       it('returns a single album with the correct id', async () => {
         const expected = albums[0];
@@ -95,7 +90,7 @@ describe('read album', () => {
     });
   });
 
-  describe('artist/:artistId/album', () => {
+  describe('artist/{artistId}/album', () => {
     describe('GET', () => {
       it('returns all albums records of an artist in the database', async () => {
         const { id: artistId } = artists[0];
@@ -108,6 +103,19 @@ describe('read album', () => {
           (album) => album.artistId === artistId
         );
         expect(res.body).to.deep.equal(expectedAlbums);
+      });
+
+      it('return a 404 if no albums exists for that artist in the database', async () => {
+        const { id: artistId } = artists[2];
+        const res = await request(app).get(`/artist/${artistId}/album`).send();
+
+        expect(res.status).to.equal(404);
+      });
+
+      it('return a 404 if the artist is not in the database', async () => {
+        const res = await request(app).get(`/artist/99999999999/album`).send();
+
+        expect(res.status).to.equal(404);
       });
     });
   });

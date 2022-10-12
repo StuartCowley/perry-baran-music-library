@@ -32,7 +32,7 @@ describe('update artist', () => {
     await db.close();
   });
 
-  describe('/artist/:artistId', () => {
+  describe('/artist/{artistId}', () => {
     describe('PATCH', () => {
       it('updates a single artist with the correct id', async () => {
         const { id: artistId } = artists[0];
