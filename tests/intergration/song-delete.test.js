@@ -73,7 +73,7 @@ describe('read song', () => {
   describe('/song/{songId}', () => {
     describe('DELETE', () => {
       it('deletes a single songwith teh correct id', async () => {
-        const { id: songId} = songs[0];
+        const { id: songId } = songs[0];
         const res = await request(app).delete(`/song/${songId}`).send();
 
         expect(res.status).to.equal(200);

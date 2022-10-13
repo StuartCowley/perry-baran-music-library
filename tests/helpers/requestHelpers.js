@@ -1,19 +1,20 @@
 const request = require('supertest');
+const app = require('../../src/app');
 
-const post = async (app, path, data) => {
+const post = async (path, data) => {
   return await request(app).post(path).send(data);
 };
 
-const get = async (app, path) => {
+const get = async (path) => {
   return await request(app).get(path).send();
 };
 
-const patch = async (app, path, data) => {
+const patch = async (path, data) => {
   return await request(app).patch(path).send(data);
 };
 
-const del = async (app, path) => {
+const del = async (path) => {
   return await request(app).delete(path);
-}
+};
 
-module.exports = { post, get, patch, del }
+module.exports = { post, get, patch, del };

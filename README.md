@@ -114,7 +114,6 @@ Creates a new artist. Body must be sent as JSON following this schema:
 
 return all artists.
 
-
 #### GET /artist/{artistId}
 
 Gets the artist with the specifed ID.

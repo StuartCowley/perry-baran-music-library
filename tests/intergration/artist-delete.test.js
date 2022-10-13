@@ -1,8 +1,7 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const app = require('../../src/app');
 const { del } = require('../helpers/requestHelpers');
-const { setupArtist } = require('../helpers/setupHelpers');
+const { setupArtist, tearDown } = require('../helpers/setupHelpers');
 
 describe('delete artist', () => {
   let db;
@@ -10,22 +9,21 @@ describe('delete artist', () => {
 
   beforeEach(async () => {
     db = await getDb();
-    
+
     await setupArtist(db, 3);
 
     [artists] = await db.query('SELECT * from Artist');
   });
 
   afterEach(async () => {
-    await db.query('DELETE FROM Artist');
-    await db.close();
+    await tearDown(db);
   });
 
   describe('/artist/{artistId}', () => {
     describe('DELETE', () => {
       it('deletes a single artist with the correct id', async () => {
         const { id: artistId } = artists[0];
-        const { status } = await del(app, `/artist/${artistId}`);
+        const { status } = await del(`/artist/${artistId}`);
 
         expect(status).to.equal(200);
 
@@ -38,7 +36,7 @@ describe('delete artist', () => {
       });
 
       it('returns a 404 if the artist is not in the database', async () => {
-        const { status } = await del(app, '/artist/999999');
+        const { status } = await del('/artist/999999');
 
         expect(status).to.equal(404);
       });

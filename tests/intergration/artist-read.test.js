@@ -1,8 +1,7 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const app = require('../../src/app');
 const { get } = require('../helpers/requestHelpers');
-const { setupArtist } = require('../helpers/setupHelpers');
+const { setupArtist, tearDown } = require('../helpers/setupHelpers');
 
 describe('read artist', () => {
   let db;
@@ -17,14 +16,13 @@ describe('read artist', () => {
   });
 
   afterEach(async () => {
-    await db.query('DELETE FROM Artist');
-    await db.close();
+    await tearDown(db);
   });
 
   describe('/artist', () => {
     describe('GET', () => {
       it('returns all artist records in the database', async () => {
-        const { status, body} = await get(app, '/artist');
+        const { status, body } = await get('/artist');
 
         expect(status).to.equal(200);
         expect(body.length).to.equal(artists.length);
@@ -37,14 +35,14 @@ describe('read artist', () => {
     describe('GET', () => {
       it('returns a single artist with the correct id', async () => {
         const expected = artists[0];
-        const { status, body } = await get(app, `/artist/${expected.id}`)
+        const { status, body } = await get(`/artist/${expected.id}`);
 
         expect(status).to.equal(200);
         expect(body).to.deep.equal(expected);
       });
 
       it('returns a 404 if the artist is not in the database', async () => {
-        const { status } = await get(app, '/artist/999999');
+        const { status } = await get('/artist/999999');
 
         expect(status).to.equal(404);
       });

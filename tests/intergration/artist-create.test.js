@@ -1,8 +1,8 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const app = require('../../src/app');
 const { post } = require('../helpers/requestHelpers');
 const { artistFactory } = require('../helpers/dataFactory');
+const { tearDown } = require('../helpers/setupHelpers');
 
 describe('create artist', () => {
   let db;
@@ -10,8 +10,7 @@ describe('create artist', () => {
   beforeEach(async () => (db = await getDb()));
 
   afterEach(async () => {
-    await db.query('DELETE FROM Artist');
-    await db.close();
+    await tearDown(db);
   });
 
   describe('/artist', () => {
@@ -19,7 +18,7 @@ describe('create artist', () => {
       it('creates a new artist in the database', async () => {
         const data = artistFactory();
 
-        const { status } = await post(app, '/artist', data);
+        const { status } = await post('/artist', data);
 
         expect(status).to.equal(201);
 

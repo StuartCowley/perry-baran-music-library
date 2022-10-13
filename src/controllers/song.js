@@ -122,7 +122,7 @@ exports.patch = async (req, res) => {
   } catch (err) {
     res.staus(500).send();
   }
-  
+
   db.close();
 };
 
@@ -131,10 +131,9 @@ exports.delete = async (req, res) => {
   const { songId } = req.params;
 
   try {
-    const [{ affectedRows }] = await db.query(
-      `DELETE FROM Song WHERE id = ?`,
-      [songId]
-    );
+    const [{ affectedRows }] = await db.query(`DELETE FROM Song WHERE id = ?`, [
+      songId,
+    ]);
 
     if (!affectedRows) {
       res.status(404).send();

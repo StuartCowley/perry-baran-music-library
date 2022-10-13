@@ -76,24 +76,24 @@ describe('read song', () => {
         const { id: songId } = songs[0];
         const res = await request(app)
           .patch(`/song/${songId}`)
-          .send({ name: 'Restless Thoughts', position: 2});
+          .send({ name: 'Restless Thoughts', position: 2 });
 
-          expect(res.status).to.equal(200);
+        expect(res.status).to.equal(200);
 
-          const [[newSongRecord]] = await db.query(
-            `SELECT * FROM Song WHERE id = ?`,
-            [songId]
-          );
+        const [[newSongRecord]] = await db.query(
+          `SELECT * FROM Song WHERE id = ?`,
+          [songId]
+        );
 
-          expect(newSongRecord.name).to.equal('Restless Thoughts');
-          expect(newSongRecord.position).to.equal(2);
+        expect(newSongRecord.name).to.equal('Restless Thoughts');
+        expect(newSongRecord.position).to.equal(2);
       });
 
       it('returns a 404 if the Song is not in the database', async () => {
         const res = await request(app)
           .patch('/song/999999')
           .send({ name: 'test' });
-  
+
         expect(res.status).to.equal(404);
       });
     });
