@@ -1,7 +1,8 @@
 const { expect } = require('chai');
-const request = require('supertest');
-const getDb = require('../src/services/db');
-const app = require('../src/app');
+const getDb = require('../../src/services/db');
+const app = require('../../src/app');
+const { del } = require('../helpers/requestHelpers');
+const { setupArtist } = require('../helpers/setupHelpers');
 
 describe('delete artist', () => {
   let db;
@@ -9,20 +10,8 @@ describe('delete artist', () => {
 
   beforeEach(async () => {
     db = await getDb();
-    await Promise.all([
-      db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-        'Tame Impala',
-        'rock',
-      ]),
-      db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-        'Kylie Minogue',
-        'pop',
-      ]),
-      db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-        'Dave Brubeck',
-        'jazz',
-      ]),
-    ]);
+    
+    await setupArtist(db, 3);
 
     [artists] = await db.query('SELECT * from Artist');
   });
@@ -36,9 +25,9 @@ describe('delete artist', () => {
     describe('DELETE', () => {
       it('deletes a single artist with the correct id', async () => {
         const { id: artistId } = artists[0];
-        const res = await request(app).delete(`/artist/${artistId}`).send();
+        const { status } = await del(app, `/artist/${artistId}`);
 
-        expect(res.status).to.equal(200);
+        expect(status).to.equal(200);
 
         const [[deletedArtistRecord]] = await db.query(
           'SELECT * FROM Artist WHERE id = ?',
@@ -49,9 +38,9 @@ describe('delete artist', () => {
       });
 
       it('returns a 404 if the artist is not in the database', async () => {
-        const res = await request(app).delete('/artist/999999').send();
+        const { status } = await del(app, '/artist/999999');
 
-        expect(res.status).to.equal(404);
+        expect(status).to.equal(404);
       });
     });
   });

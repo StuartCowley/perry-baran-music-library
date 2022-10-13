@@ -25,6 +25,7 @@ Created as part of the Manchester Codes full-stack web development boot-camp.
 - [Mocha](https://www.npmjs.com/package/mocha)
 - [Chai](https://www.npmjs.com/package/chai)
 - [Supertest](https://www.npmjs.com/package/supertest)
+- [Faker](https://www.npmjs.com/package/@faker-js/faker)
 
 ## Setup
 

@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/PerryBaran/music-library#readme",
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "chai": "^4.3.6",
     "dotenv": "^16.0.3",
     "eslint": "^8.24.0",
