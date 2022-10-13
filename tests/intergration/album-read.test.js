@@ -3,6 +3,7 @@ const getDb = require('../../src/services/db');
 const {
   setupArtist,
   setupAlbum,
+  createArtist,
   tearDown,
 } = require('../helpers/setupHelpers');
 const { albumFactory } = require('../helpers/dataFactory');
@@ -100,12 +101,7 @@ describe('read album', () => {
         try {
           const data = albumFactory();
 
-          //adding a new artist to the database but not adding any albums for that artist
-          await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-            data.name,
-            data.year,
-          ]);
-
+          await createArtist(db, data);
           [artists] = await db.query('SELECT * from Artist');
 
           const { id: artistId } = artists[artists.length - 1];

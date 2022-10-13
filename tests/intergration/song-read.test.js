@@ -6,6 +6,8 @@ const {
   setupArtist,
   setupAlbum,
   setupSong,
+  createArtist,
+  createAlbum,
   tearDown,
 } = require('../helpers/setupHelpers');
 
@@ -105,12 +107,7 @@ describe('read song', () => {
           try {
             const data = songFactory();
 
-            //add an artist to the database but not adding any songs
-            await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-              data.name,
-              data.year,
-            ]);
-
+            await createArtist(db, data);
             [artists] = await db.query('SELECT * from Artist');
 
             const { id: artistId } = artists[artists.length - 1];
@@ -158,21 +155,11 @@ describe('read song', () => {
           try {
             const data = songFactory();
 
-            //add an artist and album to the database but not adding any songs
-            await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-              data.name,
-              data.year,
-            ]);
-
+            await createArtist(db, data);
             [artists] = await db.query('SELECT * from Artist');
+            const artist = artists[artists.length - 1];
 
-            const { id: artistId } = artists[artists.length - 1];
-
-            await db.query(
-              `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
-              [data.name, data.year, artistId]
-            );
-
+            await createAlbum(db, data, artist);
             [albums] = await db.query('SELECT * from Artist');
 
             const { id: albumId } = albums[albums.length - 1];

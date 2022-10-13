@@ -34,9 +34,9 @@ describe('create album', () => {
           const { id: artistId } = artists[0];
           const data = albumFactory();
 
-          const res = await post(`/artist/${artistId}/album`, data);
+          const { status } = await post(`/artist/${artistId}/album`, data);
 
-          expect(res.status).to.equal(201);
+          expect(status).to.equal(201);
 
           const [[albumEntries]] = await db.query(
             `SELECT * FROM Album WHERE artistId = ?`,
