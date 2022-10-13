@@ -1,4 +1,4 @@
-const { artistFactory, albumFactory } = require('./dataFactory');
+const { artistFactory, albumFactory, songFactory } = require('./dataFactory');
 
 const setupArtist = async (db, entries) => {
   try {
@@ -15,16 +15,36 @@ const setupArtist = async (db, entries) => {
 };
 
 const setupAlbum = async (db, artists) => {
-  for (let j = 0; j < artists.length; j++) {
-    const artistId = artists[j].id;
-    const entries = Math.floor(Math.random() * 10) + 1;
+  const { length } = artists
+  for (let i = 0; i < length; i++) {
+    const artistId = artists[i].id;
+    const entries = Math.floor(Math.random() * 5) + 1;
 
-    for (let i = 0; i < entries; i++) {
+    for (let j = 0; j < entries; j++) {
       const data = albumFactory();
+
       await db.query(
         `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
         [data.name, data.year, artistId]
       );
+    }
+  }
+};
+
+const setupSong = async (db, albums) => {
+  const { length } = albums;
+  for (let i = 0; i < length; i++) {
+    const albumId = albums[i].id;
+    const artistId = albums[i].artistId;
+    const entries = Math.floor(Math.random() * 5) + 1;
+
+    for (let j = 0; j < entries; j++) {
+      const data = songFactory();
+
+      db.query(
+        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
+        [data.name, data.position, albumId, artistId]
+      )
     }
   }
 };
@@ -36,4 +56,4 @@ const tearDown = async (db) => {
   await db.close();
 };
 
-module.exports = { setupArtist, setupAlbum, tearDown };
+module.exports = { setupArtist, setupAlbum, setupSong, tearDown };

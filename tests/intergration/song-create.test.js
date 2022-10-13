@@ -1,7 +1,8 @@
 const { expect } = require('chai');
-const request = require('supertest');
 const getDb = require('../../src/services/db');
-const app = require('../../src/app');
+const { post } = require('../helpers/requestHelpers');
+const { songFactory } = require('../helpers/dataFactory');
+const { setupArtist, setupAlbum, tearDown } = require('../helpers/setupHelpers');
 
 describe('create song', () => {
   let db;
@@ -11,56 +12,45 @@ describe('create song', () => {
   beforeEach(async () => {
     db = await getDb();
 
-    await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-      'Jenico',
-      'Electronic',
-    ]);
-
+    await setupArtist(db, 3);
     [artists] = await db.query('SELECT * FROM Artist');
 
-    await db.query('INSERT INTO Album (name, year, artistId) VALUES(?, ?, ?)', [
-      'Dreaming of Detuned Love',
-      2021,
-      artists[0].id,
-    ]);
-
+    await setupAlbum(db, artists);
     [albums] = await db.query('SELECT * FROM Album');
   });
 
   afterEach(async () => {
-    await db.query('DELETE FROM Artist');
-    await db.query('DELETE FROM Album');
-    await db.close();
+    await tearDown(db)
   });
 
   describe('/album/{albumId}/song', () => {
     describe('POST', () => {
-      it('creates a new song in the databse if the album exists', async () => {
-        const [{ id: albumId }] = albums;
-        const [{ id: artistId }] = artists;
-        const res = await request(app).post(`/album/${albumId}/song`).send({
-          name: 'Slumber',
-          position: 0,
-        });
+      it('creates a new song in the database if the album exists', async () => {
+        const { id: albumId } = albums[0];
+        const { id: artistId } = artists[0];
+        const data = songFactory();
 
-        expect(res.status).to.equal(201);
+        const { status } = await post(`/album/${albumId}/song`, data);
+
+        expect(status).to.equal(201);
 
         const [[songEntries]] = await db.query(
-          `SELECT * FROM Song WHERE name = 'Slumber'`
+          `SELECT * FROM Song WHERE name = ?`,
+          [data.name]
         );
 
-        expect(songEntries.position).to.equal(0);
+        expect(songEntries.name).to.equal(data.name);
+        expect(songEntries.position).to.equal(data.position);
         expect(songEntries.albumId).to.equal(albumId);
         expect(songEntries.artistId).to.equal(artistId);
       });
 
       it('returns a 404 if the album is not in the database', async () => {
-        const res = await request(app).post(`/album/999999999/song`).send({
-          name: 'Slumber',
-          length: 98,
-        });
+        const data = songFactory();
+        
+        const { status } = await post(`/album/999999999/song`, data);
 
-        expect(res.status).to.equal(404);
+        expect(status).to.equal(404);
       });
     });
   });

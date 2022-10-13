@@ -1,7 +1,7 @@
 const { expect } = require('chai');
-const request = require('supertest');
 const getDb = require('../../src/services/db');
-const app = require('../../src/app');
+const { setupArtist, setupAlbum, setupSong, tearDown } = require('../helpers/setupHelpers');
+const { del } = require('../helpers/requestHelpers');
 
 describe('read song', () => {
   let db;
@@ -12,71 +12,27 @@ describe('read song', () => {
   beforeEach(async () => {
     db = await getDb();
 
-    await Promise.all([
-      db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
-        'Jenico',
-        'Electronic',
-      ]),
-      db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
-        'Jasmine Myra',
-        'Jazz',
-      ]),
-    ]);
-
+    await setupArtist(db, 3);
     [artists] = await db.query('SELECT * from Artist');
 
-    await Promise.all([
-      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
-        'Dreaming of Detuned Love',
-        2021,
-        artists[0].id,
-      ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
-        'Ethereal',
-        2019,
-        artists[0].id,
-      ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
-        'Horizons',
-        2022,
-        artists[1].id,
-      ]),
-    ]);
-
+    await setupAlbum(db, artists);
     [albums] = await db.query('SELECT * from Album');
 
-    await Promise.all([
-      db.query(
-        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-        ['Slumber', 0, albums[0].id, artists[0].id]
-      ),
-      db.query(
-        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-        ['Your Careless Embrace', 1, albums[0].id, artists[0].id]
-      ),
-      db.query(
-        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-        ['Distressed', 0, albums[1].id, artists[0].id]
-      ),
-    ]);
-
+    await setupSong(db, albums);
     [songs] = await db.query('SELECT * from Song');
   });
 
   afterEach(async () => {
-    await db.query('DELETE FROM Artist');
-    await db.query('DELETE FROM Album');
-    await db.query('DELETE FROM Song');
-    await db.close();
+    await tearDown(db);
   });
 
   describe('/song/{songId}', () => {
     describe('DELETE', () => {
-      it('deletes a single songwith teh correct id', async () => {
+      it('deletes a single song with the correct id', async () => {
         const { id: songId } = songs[0];
-        const res = await request(app).delete(`/song/${songId}`).send();
+        const { status } = await del(`/song/${songId}`);
 
-        expect(res.status).to.equal(200);
+        expect(status).to.equal(200);
 
         const [[deletedSongRecord]] = await db.query(
           `SELECT * FROM Song WHERE id = ?`,
@@ -87,9 +43,9 @@ describe('read song', () => {
       });
 
       it('returns a 404 if the song is not in the database', async () => {
-        const res = await request(app).delete('/song/999999').send();
+        const { status } = await del('/song/999999');
 
-        expect(res.status).to.equal(404);
+        expect(status).to.equal(404);
       });
     });
   });

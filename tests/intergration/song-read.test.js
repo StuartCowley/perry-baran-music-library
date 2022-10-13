@@ -1,7 +1,8 @@
 const { expect } = require('chai');
-const request = require('supertest');
 const getDb = require('../../src/services/db');
-const app = require('../../src/app');
+const { get } = require('../helpers/requestHelpers');
+const { setupArtist, setupAlbum, setupSong, tearDown } = require('../helpers/setupHelpers');
+const { songFactory } = require('../helpers/dataFactory');
 
 describe('read song', () => {
   let db;
@@ -12,77 +13,28 @@ describe('read song', () => {
   beforeEach(async () => {
     db = await getDb();
 
-    await Promise.all([
-      db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
-        'Jenico',
-        'Electronic',
-      ]),
-      db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
-        'Jasmine Myra',
-        'Jazz',
-      ]),
-    ]);
-
+    await setupArtist(db, 3);
     [artists] = await db.query('SELECT * from Artist');
 
-    await Promise.all([
-      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
-        'Dreaming of Detuned Love',
-        2021,
-        artists[0].id,
-      ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
-        'Ethereal',
-        2019,
-        artists[0].id,
-      ]),
-      db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
-        'Horizons',
-        2022,
-        artists[1].id,
-      ]),
-    ]);
-
+    await setupAlbum(db, artists);
     [albums] = await db.query('SELECT * from Album');
 
-    await Promise.all([
-      db.query(
-        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-        ['Slumber', 0, albums[0].id, artists[0].id]
-      ),
-      db.query(
-        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-        ['Your Careless Embrace', 1, albums[0].id, artists[0].id]
-      ),
-      db.query(
-        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-        ['Distressed', 0, albums[1].id, artists[0].id]
-      ),
-    ]);
-
+    await setupSong(db, albums);
     [songs] = await db.query('SELECT * from Song');
   });
 
   afterEach(async () => {
-    await db.query('DELETE FROM Artist');
-    await db.query('DELETE FROM Album');
-    await db.query('DELETE FROM Song');
-    await db.close();
+    await tearDown(db);
   });
 
   describe('/song', () => {
     describe('GET', () => {
       it('returns all song records in the database', async () => {
-        const res = await request(app).get('/song').send();
+        const { status, body } = await get('/song');
 
-        expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(songs.length);
-
-        res.body.forEach((songRecord) => {
-          const expected = songs.find((song) => song.id === songRecord.id);
-
-          expect(songRecord).to.deep.equal(expected);
-        });
+        expect(status).to.equal(200);
+        expect(body.length).to.equal(songs.length);
+        expect(body).to.deep.equal(songs);
       });
     });
 
@@ -90,16 +42,16 @@ describe('read song', () => {
       describe('GET', () => {
         it('returns a sing song with the correct id', async () => {
           const expected = songs[0];
-          const res = await request(app).get(`/song/${expected.id}`).send();
+          const { status, body } = await get(`/song/${expected.id}`);
 
-          expect(res.status).to.equal(200);
-          expect(res.body).to.deep.equal(expected);
+          expect(status).to.equal(200);
+          expect(body).to.deep.equal(expected);
         });
 
         it('returns a 404 if the song is not in the database', async () => {
-          const res = await request(app).get('/song/9999999').send();
+          const { status } = await get('/song/9999999');
 
-          expect(res.status).to.equal(404);
+          expect(status).to.equal(404);
         });
       });
     });
@@ -108,29 +60,39 @@ describe('read song', () => {
       describe('GET', () => {
         it('returns all songs records of an artist in the database', async () => {
           const { id: artistId } = artists[0];
-          const res = await request(app).get(`/artist/${artistId}/song`).send();
+          const { status, body } = await get(`/artist/${artistId}/song`);
 
-          expect(res.status).to.equal(200);
-          expect(res.body.length).to.equal(3);
+          expect(status).to.equal(200);
 
           const expectedSongs = songs.filter(
             (song) => song.artistId === artistId
           );
 
-          expect(res.body).to.deep.equal(expectedSongs);
+          expect(body.length).to.equal(expectedSongs.length);
+          expect(body).to.deep.equal(expectedSongs);
         });
 
         it('return a 404 if no songs exists for that artist in the database', async () => {
-          const { id: artistId } = artists[1];
-          const res = await request(app).get(`/artist/${artistId}/song`).send();
+          const data = songFactory();
 
-          expect(res.status).to.equal(404);
+          //add an artist to the database but not adding any songs
+          await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+            data.name,
+            data.year,
+          ]);
+
+          [artists] = await db.query('SELECT * from Artist');
+
+          const { id: artistId } = artists[artists.length - 1];
+          const { status } = await get(`/artist/${artistId}/song`);
+
+          expect(status).to.equal(404);
         });
 
         it('return a 404 if the artist is not in the database', async () => {
-          const res = await request(app).get(`/artist/999999999/album`).send();
+          const { status } = await get(`/artist/999999999/album`);
 
-          expect(res.status).to.equal(404);
+          expect(status).to.equal(404);
         });
       });
     });
@@ -139,29 +101,48 @@ describe('read song', () => {
       describe('GET', () => {
         it('returns all songs records of an album in the database', async () => {
           const { id: albumId } = albums[0];
-          const res = await request(app).get(`/album/${albumId}/song`).send();
+          const { status, body} = await get(`/album/${albumId}/song`);
 
-          expect(res.status).to.equal(200);
-          expect(res.body.length).to.equal(2);
-
+          expect(status).to.equal(200);
+        
           const expectedSongs = songs.filter(
             (song) => song.albumId === albumId
           );
-
-          expect(res.body).to.deep.equal(expectedSongs);
+          
+          expect(body.length).to.equal(expectedSongs.length);
+          expect(body).to.deep.equal(expectedSongs);
         });
 
         it('return a 404 if no songs exists for that album in the database', async () => {
-          const { id: albumId } = albums[2];
-          const res = await request(app).get(`/album/${albumId}/song`).send();
+          const data = songFactory();
 
-          expect(res.status).to.equal(404);
+          //add an artist and album to the database but not adding any songs
+          await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+            data.name,
+            data.year,
+          ]);
+
+          [artists] = await db.query('SELECT * from Artist');
+
+          const { id: artistId } = artists[artists.length - 1];
+
+          await db.query(
+            `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
+            [data.name, data.year, artistId]
+          );
+
+          [albums] = await db.query('SELECT * from Artist');
+
+          const { id: albumId } = albums[albums.length - 1];
+          const { status } = await get(`/album/${albumId}/song`);
+
+          expect(status).to.equal(404);
         });
 
         it('return a 404 if the album is not in the database', async () => {
-          const res = await request(app).get(`/album/9999999/song`).send();
+          const { status } = await get(`/album/9999999/song`);
 
-          expect(res.status).to.equal(404);
+          expect(status).to.equal(404);
         });
       });
     });

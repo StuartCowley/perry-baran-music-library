@@ -17,11 +17,9 @@ describe('update album', () => {
     db = await getDb();
 
     await setupArtist(db, 3);
-
     [artists] = await db.query('SELECT * from Artist');
 
     await setupAlbum(db, artists);
-
     [albums] = await db.query('SELECT * from Album');
   });
 

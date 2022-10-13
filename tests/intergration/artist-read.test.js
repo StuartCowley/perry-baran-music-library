@@ -11,7 +11,6 @@ describe('read artist', () => {
     db = await getDb();
 
     await setupArtist(db, 3);
-
     [artists] = await db.query('SELECT * from Artist');
   });
 
