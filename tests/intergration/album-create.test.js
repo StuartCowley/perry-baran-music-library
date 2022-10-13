@@ -9,40 +9,56 @@ describe('create album', () => {
   let artists;
 
   beforeEach(async () => {
-    db = await getDb();
+    try {
+      db = await getDb();
 
-    await setupArtist(db, 3);
-    [artists] = await db.query('SELECT * FROM Artist');
+      await setupArtist(db, 3);
+      [artists] = await db.query('SELECT * FROM Artist');
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   afterEach(async () => {
-    await tearDown(db);
+    try {
+      await tearDown(db);
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   describe('/artist/{artistId}/album`', () => {
     describe('POST', () => {
       it('creates a new album in the database if artist exists', async () => {
-        const { id: artistId } = artists[0];
-        const data = albumFactory();
+        try {
+          const { id: artistId } = artists[0];
+          const data = albumFactory();
 
-        const res = await post(`/artist/${artistId}/album`, data);
+          const res = await post(`/artist/${artistId}/album`, data);
 
-        expect(res.status).to.equal(201);
+          expect(res.status).to.equal(201);
 
-        const [[albumEntries]] = await db.query(
-          `SELECT * FROM Album WHERE artistId = ?`,
-          [artistId]
-        );
+          const [[albumEntries]] = await db.query(
+            `SELECT * FROM Album WHERE artistId = ?`,
+            [artistId]
+          );
 
-        expect(albumEntries.name).to.equal(data.name);
-        expect(albumEntries.year).to.equal(data.year);
+          expect(albumEntries.name).to.equal(data.name);
+          expect(albumEntries.year).to.equal(data.year);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('returns a 404 if the artist is not in the database', async () => {
-        const data = albumFactory();
-        const { status } = await post(`/artist/999999999/album`, data);
+        try {
+          const data = albumFactory();
+          const { status } = await post(`/artist/999999999/album`, data);
 
-        expect(status).to.equal(404);
+          expect(status).to.equal(404);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });

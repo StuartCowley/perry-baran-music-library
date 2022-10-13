@@ -14,27 +14,39 @@ describe('read album', () => {
   let albums;
 
   beforeEach(async () => {
-    db = await getDb();
+    try {
+      db = await getDb();
 
-    await setupArtist(db, 3);
-    [artists] = await db.query('SELECT * from Artist');
+      await setupArtist(db, 3);
+      [artists] = await db.query('SELECT * from Artist');
 
-    await setupAlbum(db, artists);
-    [albums] = await db.query('SELECT * from Album');
+      await setupAlbum(db, artists);
+      [albums] = await db.query('SELECT * from Album');
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   afterEach(async () => {
-    await tearDown(db);
+    try {
+      await tearDown(db);
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   describe('/album', () => {
     describe('GET', () => {
       it('returns all album records in the database', async () => {
-        const { status, body } = await get('/album');
+        try {
+          const { status, body } = await get('/album');
 
-        expect(status).to.equal(200);
-        expect(body.length).to.equal(albums.length);
-        expect(body).to.deep.equal(albums);
+          expect(status).to.equal(200);
+          expect(body.length).to.equal(albums.length);
+          expect(body).to.deep.equal(albums);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });
@@ -42,55 +54,77 @@ describe('read album', () => {
   describe('album/{albumId}', () => {
     describe('GET', () => {
       it('returns a single album with the correct id', async () => {
-        const expected = albums[0];
-        const { status, body } = await get(`/album/${expected.id}`);
+        try {
+          const expected = albums[0];
+          const { status, body } = await get(`/album/${expected.id}`);
 
-        expect(status).to.equal(200);
-        expect(body).to.deep.equal(expected);
+          expect(status).to.equal(200);
+          expect(body).to.deep.equal(expected);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
 
     it('returns a 404 if the album is not in the database', async () => {
-      const { status } = await get('/artist/999999');
+      try {
+        const { status } = await get('/artist/999999');
 
-      expect(status).to.equal(404);
+        expect(status).to.equal(404);
+      } catch (err) {
+        throw new Error(err);
+      }
     });
   });
 
   describe('artist/{artistId}/album', () => {
     describe('GET', () => {
       it('returns all albums records of an artist in the database', async () => {
-        const { id: artistId } = artists[0];
-        const expected = albums.filter((album) => album.artistId === artistId);
+        try {
+          const { id: artistId } = artists[0];
+          const expected = albums.filter(
+            (album) => album.artistId === artistId
+          );
 
-        const { status, body } = await get(`/artist/${artistId}/album`);
+          const { status, body } = await get(`/artist/${artistId}/album`);
 
-        expect(status).to.equal(200);
-        expect(body.length).to.equal(expected.length);
-        expect(body).to.deep.equal(expected);
+          expect(status).to.equal(200);
+          expect(body.length).to.equal(expected.length);
+          expect(body).to.deep.equal(expected);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('return a 404 if no albums exists for that artist in the database', async () => {
-        const data = albumFactory();
+        try {
+          const data = albumFactory();
 
-        //adding a new artist to the database but not adding any albums for that artist
-        await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-          data.name,
-          data.year,
-        ]);
+          //adding a new artist to the database but not adding any albums for that artist
+          await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+            data.name,
+            data.year,
+          ]);
 
-        [artists] = await db.query('SELECT * from Artist');
+          [artists] = await db.query('SELECT * from Artist');
 
-        const { id: artistId } = artists[artists.length - 1];
-        const { status } = await get(`/artist/${artistId}/album`);
+          const { id: artistId } = artists[artists.length - 1];
+          const { status } = await get(`/artist/${artistId}/album`);
 
-        expect(status).to.equal(404);
+          expect(status).to.equal(404);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('return a 404 if the artist is not in the database', async () => {
-        const { status } = await get(`/artist/99999999999/album`);
+        try {
+          const { status } = await get(`/artist/99999999999/album`);
 
-        expect(status).to.equal(404);
+          expect(status).to.equal(404);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });

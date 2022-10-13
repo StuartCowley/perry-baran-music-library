@@ -13,39 +13,55 @@ describe('delete album', () => {
   let albums;
 
   beforeEach(async () => {
-    db = await getDb();
+    try {
+      db = await getDb();
 
-    await setupArtist(db, 3);
-    [artists] = await db.query('SELECT * from Artist');
+      await setupArtist(db, 3);
+      [artists] = await db.query('SELECT * from Artist');
 
-    await setupAlbum(db, artists);
-    [albums] = await db.query('SELECT * from Album');
+      await setupAlbum(db, artists);
+      [albums] = await db.query('SELECT * from Album');
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   afterEach(async () => {
-    await tearDown(db);
+    try {
+      await tearDown(db);
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   describe('/album/{albumId}', () => {
     describe('DELETE', () => {
       it('deletes a single album with the correct id', async () => {
-        const { id: albumId } = albums[0];
-        const { status } = await del(`/album/${albumId}`);
+        try {
+          const { id: albumId } = albums[0];
+          const { status } = await del(`/album/${albumId}`);
 
-        expect(status).to.equal(200);
+          expect(status).to.equal(200);
 
-        const [[deletedAlbumRecord]] = await db.query(
-          'SELECT * FROM Album WHERE id = ?',
-          [albumId]
-        );
+          const [[deletedAlbumRecord]] = await db.query(
+            'SELECT * FROM Album WHERE id = ?',
+            [albumId]
+          );
 
-        expect(!!deletedAlbumRecord).to.be.false;
+          expect(!!deletedAlbumRecord).to.be.false;
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('returns a 404 if the album is not in the database', async () => {
-        const { status } = await del('/album/999999');
+        try {
+          const { status } = await del('/album/999999');
 
-        expect(status).to.equal(404);
+          expect(status).to.equal(404);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });

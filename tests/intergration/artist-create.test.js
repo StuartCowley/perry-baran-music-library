@@ -7,28 +7,42 @@ const { tearDown } = require('../helpers/setupHelpers');
 describe('create artist', () => {
   let db;
 
-  beforeEach(async () => (db = await getDb()));
+  beforeEach(async () => {
+    try {
+      db = await getDb();
+    } catch (err) {
+      throw new Error(err);
+    }
+  });
 
   afterEach(async () => {
-    await tearDown(db);
+    try {
+      await tearDown(db);
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   describe('/artist', () => {
     describe('POST', () => {
       it('creates a new artist in the database', async () => {
-        const data = artistFactory();
+        try {
+          const data = artistFactory();
 
-        const { status } = await post('/artist', data);
+          const { status } = await post('/artist', data);
 
-        expect(status).to.equal(201);
+          expect(status).to.equal(201);
 
-        const [[artistEntries]] = await db.query(
-          `SELECT * FROM Artist WHERE name = ?`,
-          [data.name]
-        );
+          const [[artistEntries]] = await db.query(
+            `SELECT * FROM Artist WHERE name = ?`,
+            [data.name]
+          );
 
-        expect(artistEntries.name).to.equal(data.name);
-        expect(artistEntries.genre).to.equal(data.genre);
+          expect(artistEntries.name).to.equal(data.name);
+          expect(artistEntries.genre).to.equal(data.genre);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });

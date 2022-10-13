@@ -8,36 +8,52 @@ describe('delete artist', () => {
   let artists;
 
   beforeEach(async () => {
-    db = await getDb();
+    try {
+      db = await getDb();
 
-    await setupArtist(db, 3);
-    [artists] = await db.query('SELECT * from Artist');
+      await setupArtist(db, 3);
+      [artists] = await db.query('SELECT * from Artist');
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   afterEach(async () => {
-    await tearDown(db);
+    try {
+      await tearDown(db);
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   describe('/artist/{artistId}', () => {
     describe('DELETE', () => {
       it('deletes a single artist with the correct id', async () => {
-        const { id: artistId } = artists[0];
-        const { status } = await del(`/artist/${artistId}`);
+        try {
+          const { id: artistId } = artists[0];
+          const { status } = await del(`/artist/${artistId}`);
 
-        expect(status).to.equal(200);
+          expect(status).to.equal(200);
 
-        const [[deletedArtistRecord]] = await db.query(
-          'SELECT * FROM Artist WHERE id = ?',
-          [artistId]
-        );
+          const [[deletedArtistRecord]] = await db.query(
+            'SELECT * FROM Artist WHERE id = ?',
+            [artistId]
+          );
 
-        expect(!!deletedArtistRecord).to.be.false;
+          expect(!!deletedArtistRecord).to.be.false;
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('returns a 404 if the artist is not in the database', async () => {
-        const { status } = await del('/artist/999999');
+        try {
+          const { status } = await del('/artist/999999');
 
-        expect(status).to.equal(404);
+          expect(status).to.equal(404);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });

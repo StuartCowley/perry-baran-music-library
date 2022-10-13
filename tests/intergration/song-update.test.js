@@ -1,8 +1,13 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const { setupArtist, setupAlbum, setupSong, tearDown } = require('../helpers/setupHelpers');
-const { patch } = require('../helpers/requestHelpers');
 const { songFactory } = require('../helpers/dataFactory');
+const { patch } = require('../helpers/requestHelpers');
+const {
+  setupArtist,
+  setupAlbum,
+  setupSong,
+  tearDown,
+} = require('../helpers/setupHelpers');
 
 describe('read song', () => {
   let db;
@@ -11,45 +16,61 @@ describe('read song', () => {
   let songs;
 
   beforeEach(async () => {
-    db = await getDb();
+    try {
+      db = await getDb();
 
-    await setupArtist(db, 3);
-    [artists] = await db.query('SELECT * from Artist');
+      await setupArtist(db, 3);
+      [artists] = await db.query('SELECT * from Artist');
 
-    await setupAlbum(db, artists);
-    [albums] = await db.query('SELECT * from Album');
+      await setupAlbum(db, artists);
+      [albums] = await db.query('SELECT * from Album');
 
-    await setupSong(db, albums);
-    [songs] = await db.query('SELECT * from Song');
+      await setupSong(db, albums);
+      [songs] = await db.query('SELECT * from Song');
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   afterEach(async () => {
-    await tearDown(db);
+    try {
+      await tearDown(db);
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   describe('/song/{songId}', () => {
     describe('PATCH', () => {
       it('updates a single song with correct id', async () => {
-        const { id: songId } = songs[0];
-        const data = songFactory();
-        const { status } = await patch(`/song/${songId}`, data);
+        try {
+          const { id: songId } = songs[0];
+          const data = songFactory();
+          const { status } = await patch(`/song/${songId}`, data);
 
-        expect(status).to.equal(200);
+          expect(status).to.equal(200);
 
-        const [[newSongRecord]] = await db.query(
-          `SELECT * FROM Song WHERE id = ?`,
-          [songId]
-        );
+          const [[newSongRecord]] = await db.query(
+            `SELECT * FROM Song WHERE id = ?`,
+            [songId]
+          );
 
-        expect(newSongRecord.name).to.equal(data.name);
-        expect(newSongRecord.position).to.equal(data.position);
+          expect(newSongRecord.name).to.equal(data.name);
+          expect(newSongRecord.position).to.equal(data.position);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('returns a 404 if the Song is not in the database', async () => {
-        const data = songFactory();
-        const { status } = await patch('/song/999999', data);
+        try {
+          const data = songFactory();
+          const { status } = await patch('/song/999999', data);
 
-        expect(status).to.equal(404);
+          expect(status).to.equal(404);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });

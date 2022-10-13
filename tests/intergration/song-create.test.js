@@ -2,7 +2,11 @@ const { expect } = require('chai');
 const getDb = require('../../src/services/db');
 const { post } = require('../helpers/requestHelpers');
 const { songFactory } = require('../helpers/dataFactory');
-const { setupArtist, setupAlbum, tearDown } = require('../helpers/setupHelpers');
+const {
+  setupArtist,
+  setupAlbum,
+  tearDown,
+} = require('../helpers/setupHelpers');
 
 describe('create song', () => {
   let db;
@@ -10,47 +14,63 @@ describe('create song', () => {
   let albums;
 
   beforeEach(async () => {
-    db = await getDb();
+    try {
+      db = await getDb();
 
-    await setupArtist(db, 3);
-    [artists] = await db.query('SELECT * FROM Artist');
+      await setupArtist(db, 3);
+      [artists] = await db.query('SELECT * FROM Artist');
 
-    await setupAlbum(db, artists);
-    [albums] = await db.query('SELECT * FROM Album');
+      await setupAlbum(db, artists);
+      [albums] = await db.query('SELECT * FROM Album');
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   afterEach(async () => {
-    await tearDown(db)
+    try {
+      await tearDown(db);
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   describe('/album/{albumId}/song', () => {
     describe('POST', () => {
       it('creates a new song in the database if the album exists', async () => {
-        const { id: albumId } = albums[0];
-        const { id: artistId } = artists[0];
-        const data = songFactory();
+        try {
+          const { id: albumId } = albums[0];
+          const { id: artistId } = artists[0];
+          const data = songFactory();
 
-        const { status } = await post(`/album/${albumId}/song`, data);
+          const { status } = await post(`/album/${albumId}/song`, data);
 
-        expect(status).to.equal(201);
+          expect(status).to.equal(201);
 
-        const [[songEntries]] = await db.query(
-          `SELECT * FROM Song WHERE name = ?`,
-          [data.name]
-        );
+          const [[songEntries]] = await db.query(
+            `SELECT * FROM Song WHERE name = ?`,
+            [data.name]
+          );
 
-        expect(songEntries.name).to.equal(data.name);
-        expect(songEntries.position).to.equal(data.position);
-        expect(songEntries.albumId).to.equal(albumId);
-        expect(songEntries.artistId).to.equal(artistId);
+          expect(songEntries.name).to.equal(data.name);
+          expect(songEntries.position).to.equal(data.position);
+          expect(songEntries.albumId).to.equal(albumId);
+          expect(songEntries.artistId).to.equal(artistId);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('returns a 404 if the album is not in the database', async () => {
-        const data = songFactory();
-        
-        const { status } = await post(`/album/999999999/song`, data);
+        try {
+          const data = songFactory();
 
-        expect(status).to.equal(404);
+          const { status } = await post(`/album/999999999/song`, data);
+
+          expect(status).to.equal(404);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });

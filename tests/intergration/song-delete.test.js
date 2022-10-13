@@ -1,7 +1,12 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const { setupArtist, setupAlbum, setupSong, tearDown } = require('../helpers/setupHelpers');
 const { del } = require('../helpers/requestHelpers');
+const {
+  setupArtist,
+  setupAlbum,
+  setupSong,
+  tearDown,
+} = require('../helpers/setupHelpers');
 
 describe('read song', () => {
   let db;
@@ -10,42 +15,58 @@ describe('read song', () => {
   let songs;
 
   beforeEach(async () => {
-    db = await getDb();
+    try {
+      db = await getDb();
 
-    await setupArtist(db, 3);
-    [artists] = await db.query('SELECT * from Artist');
+      await setupArtist(db, 3);
+      [artists] = await db.query('SELECT * from Artist');
 
-    await setupAlbum(db, artists);
-    [albums] = await db.query('SELECT * from Album');
+      await setupAlbum(db, artists);
+      [albums] = await db.query('SELECT * from Album');
 
-    await setupSong(db, albums);
-    [songs] = await db.query('SELECT * from Song');
+      await setupSong(db, albums);
+      [songs] = await db.query('SELECT * from Song');
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   afterEach(async () => {
-    await tearDown(db);
+    try {
+      await tearDown(db);
+    } catch (err) {
+      throw new Error(err);
+    }
   });
 
   describe('/song/{songId}', () => {
     describe('DELETE', () => {
       it('deletes a single song with the correct id', async () => {
-        const { id: songId } = songs[0];
-        const { status } = await del(`/song/${songId}`);
+        try {
+          const { id: songId } = songs[0];
+          const { status } = await del(`/song/${songId}`);
 
-        expect(status).to.equal(200);
+          expect(status).to.equal(200);
 
-        const [[deletedSongRecord]] = await db.query(
-          `SELECT * FROM Song WHERE id = ?`,
-          [songId]
-        );
+          const [[deletedSongRecord]] = await db.query(
+            `SELECT * FROM Song WHERE id = ?`,
+            [songId]
+          );
 
-        expect(!!deletedSongRecord).to.be.false;
+          expect(!!deletedSongRecord).to.be.false;
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('returns a 404 if the song is not in the database', async () => {
-        const { status } = await del('/song/999999');
+        try {
+          const { status } = await del('/song/999999');
 
-        expect(status).to.equal(404);
+          expect(status).to.equal(404);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });
