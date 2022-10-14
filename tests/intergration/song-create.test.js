@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const { post } = require('../helpers/requestHelpers');
+const { appPost } = require('../helpers/requestHelpers');
 const { songFactory } = require('../helpers/dataFactory');
 const {
   setupArtist,
@@ -42,7 +42,7 @@ describe('create song', () => {
           const { id: albumId } = albums[0];
           const data = songFactory();
 
-          const { status } = await post(`/album/${albumId}/song`, data);
+          const { status } = await appPost(`/album/${albumId}/song`, data);
 
           expect(status).to.equal(201);
 
@@ -65,7 +65,7 @@ describe('create song', () => {
         try {
           const data = songFactory();
 
-          const { status } = await post(`/album/999999999/song`, data);
+          const { status } = await appPost(`/album/999999999/song`, data);
 
           expect(status).to.equal(404);
         } catch (err) {

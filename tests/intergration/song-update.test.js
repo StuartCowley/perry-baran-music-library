@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
 const { songFactory } = require('../helpers/dataFactory');
-const { patch } = require('../helpers/requestHelpers');
+const { appPatch } = require('../helpers/requestHelpers');
 const {
   setupArtist,
   setupAlbum,
@@ -46,7 +46,7 @@ describe('update song', () => {
         try {
           const { id: songId } = songs[0];
           const data = songFactory();
-          const { status } = await patch(`/song/${songId}`, data);
+          const { status } = await appPatch(`/song/${songId}`, data);
 
           expect(status).to.equal(200);
 
@@ -65,7 +65,7 @@ describe('update song', () => {
       it('returns a 404 if the Song is not in the database', async () => {
         try {
           const data = songFactory();
-          const { status } = await patch('/song/999999', data);
+          const { status } = await appPatch('/song/999999', data);
 
           expect(status).to.equal(404);
         } catch (err) {

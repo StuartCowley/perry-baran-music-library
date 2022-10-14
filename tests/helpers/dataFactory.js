@@ -1,30 +1,29 @@
 const { faker } = require('@faker-js/faker');
 
 const artistFactory = (options = {}) => {
+  const { name, genre } = options;
   return {
-    name: options.name || faker.lorem.word(),
-    genre: options.genre || faker.music.genre(),
+    name: name || faker.lorem.word(),
+    genre: genre || faker.music.genre(),
   };
 };
 
 const albumFactory = (options = {}) => {
+  const { name, year } = options;
   return {
-    name: options.name || faker.lorem.word(),
-    year: options.year || faker.datatype.number({ min: 1000, max: 9999 }),
+    name: name || faker.lorem.word(),
+    year: year || faker.datatype.number({ min: 1000, max: 9999 }),
   };
 };
 
 const songFactory = (options = {}) => {
-  let position;
-  if (options.position || options.position === 0) {
-    position = options.position;
-  } else {
-    position = faker.datatype.number({ min: 0, max: 20 });
-  }
-
+  const { name, position } = options;
   return {
-    name: options.name || faker.lorem.word(),
-    position,
+    name: name || faker.lorem.word(),
+    position:
+      position || position === 0
+        ? position
+        : faker.datatype.number({ min: 0, max: 20 }),
   };
 };
 

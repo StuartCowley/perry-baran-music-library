@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const { del } = require('../helpers/requestHelpers');
+const { appDelete } = require('../helpers/requestHelpers');
 const {
   setupArtist,
   setupAlbum,
@@ -44,7 +44,7 @@ describe('delete song', () => {
       it('deletes a single song with the correct id', async () => {
         try {
           const { id: songId } = songs[0];
-          const { status } = await del(`/song/${songId}`);
+          const { status } = await appDelete(`/song/${songId}`);
 
           expect(status).to.equal(200);
 
@@ -61,7 +61,7 @@ describe('delete song', () => {
 
       it('returns a 404 if the song is not in the database', async () => {
         try {
-          const { status } = await del('/song/999999');
+          const { status } = await appDelete('/song/999999');
 
           expect(status).to.equal(404);
         } catch (err) {

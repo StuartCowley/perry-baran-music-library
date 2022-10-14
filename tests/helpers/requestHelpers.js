@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../../src/app');
 
-const post = async (path, data) => {
+const appPost = async (path, data) => {
   try {
     return await request(app).post(path).send(data);
   } catch (err) {
@@ -9,7 +9,7 @@ const post = async (path, data) => {
   }
 };
 
-const get = async (path) => {
+const appGet = async (path) => {
   try {
     return await request(app).get(path).send();
   } catch (err) {
@@ -17,7 +17,7 @@ const get = async (path) => {
   }
 };
 
-const patch = async (path, data) => {
+const appPatch = async (path, data) => {
   try {
     return await request(app).patch(path).send(data);
   } catch (err) {
@@ -25,7 +25,7 @@ const patch = async (path, data) => {
   }
 };
 
-const del = async (path) => {
+const appDelete = async (path) => {
   try {
     return await request(app).delete(path);
   } catch (err) {
@@ -33,4 +33,4 @@ const del = async (path) => {
   }
 };
 
-module.exports = { post, get, patch, del };
+module.exports = { appPost, appGet, appPatch, appDelete };

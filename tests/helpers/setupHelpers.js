@@ -1,9 +1,10 @@
 const dataFactory = require('./dataFactory');
 
-const setupArtist = async (db, entries = 1, data = [{}]) => {
+//optional artistData is an array of objects following [{ name: string, genre: string }]
+const setupArtist = async (db, entries = 1, artistData = [{}]) => {
   try {
     for (let i = 0; i < entries; i++) {
-      const { name, genre } = dataFactory.artistFactory(data[i]);
+      const { name, genre } = dataFactory.artistFactory(artistData[i]);
 
       await db.query(`INSERT INTO Artist (name, genre) VALUES(?, ?)`, [
         name,
@@ -15,12 +16,14 @@ const setupArtist = async (db, entries = 1, data = [{}]) => {
   }
 };
 
-const setupAlbum = async (db, artist, entries = 1, data = [{}]) => {
-  const { id: artistId } = artist;
+//artist can be either number or an object following { id: number }
+//optional albumData is an array of objects following [{ name: string, year: number }]
+const setupAlbum = async (db, artist, entries = 1, albumData = [{}]) => {
+  const artistId = typeof artist === 'number' ? artist : artist.id;
 
   try {
     for (let i = 0; i < entries; i++) {
-      const { name, year } = dataFactory.albumFactory(data[i]);
+      const { name, year } = dataFactory.albumFactory(albumData[i]);
 
       await db.query(
         `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
@@ -32,12 +35,14 @@ const setupAlbum = async (db, artist, entries = 1, data = [{}]) => {
   }
 };
 
-const setupSong = async (db, album, entries = 1, data = [{}]) => {
+//album must be an object containing id and artistId
+//optional songData is an array of objects following [{ name: string, position: number }]
+const setupSong = async (db, album, entries = 1, songData = [{}]) => {
   const { id: albumId, artistId } = album;
 
   try {
     for (let i = 0; i < entries; i++) {
-      const { name, position } = dataFactory.songFactory(data[i]);
+      const { name, position } = dataFactory.songFactory(songData[i]);
 
       await db.query(
         `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,

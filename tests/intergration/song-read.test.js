@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const { get } = require('../helpers/requestHelpers');
+const { appGet } = require('../helpers/requestHelpers');
 const {
   setupArtist,
   setupAlbum,
@@ -53,7 +53,7 @@ describe('read song', () => {
     describe('GET', () => {
       it('returns all song records in the database', async () => {
         try {
-          const { status, body } = await get('/song');
+          const { status, body } = await appGet('/song');
 
           expect(status).to.equal(200);
           expect(body.length).to.equal(songs.length);
@@ -69,7 +69,7 @@ describe('read song', () => {
         it('returns a song with the correct id', async () => {
           try {
             const expected = songs[0];
-            const { status, body } = await get(`/song/${expected.id}`);
+            const { status, body } = await appGet(`/song/${expected.id}`);
 
             expect(status).to.equal(200);
             expect(body).to.deep.equal(expected);
@@ -80,7 +80,7 @@ describe('read song', () => {
 
         it('returns a 404 if the song is not in the database', async () => {
           try {
-            const { status } = await get('/song/9999999');
+            const { status } = await appGet('/song/9999999');
 
             expect(status).to.equal(404);
           } catch (err) {
@@ -95,7 +95,7 @@ describe('read song', () => {
         it('returns all songs records of an artist in the database', async () => {
           try {
             const { id: artistId } = artists[0];
-            const { status, body } = await get(`/artist/${artistId}/song`);
+            const { status, body } = await appGet(`/artist/${artistId}/song`);
 
             expect(status).to.equal(200);
 
@@ -113,7 +113,7 @@ describe('read song', () => {
         it('return a 404 if no songs exists for that artist in the database', async () => {
           try {
             const { id: artistId } = artists[artists.length - 1];
-            const { status } = await get(`/artist/${artistId}/song`);
+            const { status } = await appGet(`/artist/${artistId}/song`);
 
             expect(status).to.equal(404);
           } catch (err) {
@@ -123,7 +123,7 @@ describe('read song', () => {
 
         it('return a 404 if the artist is not in the database', async () => {
           try {
-            const { status } = await get(`/artist/999999999/album`);
+            const { status } = await appGet(`/artist/999999999/album`);
 
             expect(status).to.equal(404);
           } catch (err) {
@@ -138,7 +138,7 @@ describe('read song', () => {
         it('returns all songs records of an album in the database', async () => {
           try {
             const { id: albumId } = albums[0];
-            const { status, body } = await get(`/album/${albumId}/song`);
+            const { status, body } = await appGet(`/album/${albumId}/song`);
 
             expect(status).to.equal(200);
 
@@ -156,7 +156,7 @@ describe('read song', () => {
         it('return a 404 if no songs exists for that album in the database', async () => {
           try {
             const { id: albumId } = albums[albums.length - 1];
-            const { status } = await get(`/album/${albumId}/song`);
+            const { status } = await appGet(`/album/${albumId}/song`);
 
             expect(status).to.equal(404);
           } catch (err) {
@@ -166,7 +166,7 @@ describe('read song', () => {
 
         it('return a 404 if the album is not in the database', async () => {
           try {
-            const { status } = await get(`/album/9999999/song`);
+            const { status } = await appGet(`/album/9999999/song`);
 
             expect(status).to.equal(404);
           } catch (err) {

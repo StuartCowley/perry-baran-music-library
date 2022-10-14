@@ -5,7 +5,7 @@ const {
   setupAlbum,
   tearDown,
 } = require('../helpers/setupHelpers');
-const { del } = require('../helpers/requestHelpers');
+const { appDelete } = require('../helpers/requestHelpers');
 
 describe('delete album', () => {
   let db;
@@ -39,7 +39,7 @@ describe('delete album', () => {
       it('deletes a single album with the correct id', async () => {
         try {
           const { id: albumId } = albums[0];
-          const { status } = await del(`/album/${albumId}`);
+          const { status } = await appDelete(`/album/${albumId}`);
 
           expect(status).to.equal(200);
 
@@ -56,7 +56,7 @@ describe('delete album', () => {
 
       it('returns a 404 if the album is not in the database', async () => {
         try {
-          const { status } = await del('/album/999999');
+          const { status } = await appDelete('/album/999999');
 
           expect(status).to.equal(404);
         } catch (err) {

@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const { get } = require('../helpers/requestHelpers');
+const { appGet } = require('../helpers/requestHelpers');
 const { setupArtist, tearDown } = require('../helpers/setupHelpers');
 
 describe('read artist', () => {
@@ -30,7 +30,7 @@ describe('read artist', () => {
     describe('GET', () => {
       it('returns all artist records in the database', async () => {
         try {
-          const { status, body } = await get('/artist');
+          const { status, body } = await appGet('/artist');
 
           expect(status).to.equal(200);
           expect(body.length).to.equal(artists.length);
@@ -47,7 +47,7 @@ describe('read artist', () => {
       it('returns a single artist with the correct id', async () => {
         try {
           const expected = artists[0];
-          const { status, body } = await get(`/artist/${expected.id}`);
+          const { status, body } = await appGet(`/artist/${expected.id}`);
 
           expect(status).to.equal(200);
           expect(body).to.deep.equal(expected);
@@ -58,7 +58,7 @@ describe('read artist', () => {
 
       it('returns a 404 if the artist is not in the database', async () => {
         try {
-          const { status } = await get('/artist/999999');
+          const { status } = await appGet('/artist/999999');
 
           expect(status).to.equal(404);
         } catch (err) {

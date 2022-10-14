@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const { post } = require('../helpers/requestHelpers');
+const { appPost } = require('../helpers/requestHelpers');
 const { artistFactory } = require('../helpers/dataFactory');
 const { tearDown } = require('../helpers/setupHelpers');
 
@@ -29,7 +29,7 @@ describe('create artist', () => {
         try {
           const data = artistFactory();
 
-          const { status } = await post('/artist', data);
+          const { status } = await appPost('/artist', data);
 
           expect(status).to.equal(201);
 

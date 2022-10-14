@@ -5,7 +5,7 @@ const {
   setupAlbum,
   tearDown,
 } = require('../helpers/setupHelpers');
-const { get } = require('../helpers/requestHelpers');
+const { appGet } = require('../helpers/requestHelpers');
 
 describe('read album', () => {
   let db;
@@ -39,7 +39,7 @@ describe('read album', () => {
     describe('GET', () => {
       it('returns all album records in the database', async () => {
         try {
-          const { status, body } = await get('/album');
+          const { status, body } = await appGet('/album');
 
           expect(status).to.equal(200);
           expect(body.length).to.equal(albums.length);
@@ -56,7 +56,7 @@ describe('read album', () => {
       it('returns a single album with the correct id', async () => {
         try {
           const expected = albums[0];
-          const { status, body } = await get(`/album/${expected.id}`);
+          const { status, body } = await appGet(`/album/${expected.id}`);
 
           expect(status).to.equal(200);
           expect(body).to.deep.equal(expected);
@@ -68,7 +68,7 @@ describe('read album', () => {
 
     it('returns a 404 if the album is not in the database', async () => {
       try {
-        const { status } = await get('/artist/999999');
+        const { status } = await appGet('/artist/999999');
 
         expect(status).to.equal(404);
       } catch (err) {
@@ -83,7 +83,7 @@ describe('read album', () => {
         try {
           const { id: artistId } = artists[0];
 
-          const { status, body } = await get(`/artist/${artistId}/album`);
+          const { status, body } = await appGet(`/artist/${artistId}/album`);
 
           const expected = albums.filter(
             (album) => album.artistId === artistId
@@ -100,7 +100,7 @@ describe('read album', () => {
       it('return a 404 if no albums exists for that artist in the database', async () => {
         try {
           const { id: artistId } = artists[artists.length - 1];
-          const { status } = await get(`/artist/${artistId}/album`);
+          const { status } = await appGet(`/artist/${artistId}/album`);
 
           expect(status).to.equal(404);
         } catch (err) {
@@ -110,7 +110,7 @@ describe('read album', () => {
 
       it('return a 404 if the artist is not in the database', async () => {
         try {
-          const { status } = await get(`/artist/99999999999/album`);
+          const { status } = await appGet(`/artist/99999999999/album`);
 
           expect(status).to.equal(404);
         } catch (err) {

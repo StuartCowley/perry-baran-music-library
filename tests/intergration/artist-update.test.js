@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
 const { artistFactory } = require('../helpers/dataFactory');
-const { patch } = require('../helpers/requestHelpers');
+const { appPatch } = require('../helpers/requestHelpers');
 const { setupArtist, tearDown } = require('../helpers/setupHelpers');
 
 describe('update artist', () => {
@@ -34,7 +34,7 @@ describe('update artist', () => {
           const { id: artistId } = artists[0];
           const data = artistFactory();
 
-          const { status } = await patch(`/artist/${artistId}`, data);
+          const { status } = await appPatch(`/artist/${artistId}`, data);
 
           expect(status).to.equal(200);
 
@@ -54,7 +54,7 @@ describe('update artist', () => {
         try {
           const data = artistFactory();
 
-          const { status } = await patch('/artist/999999', data);
+          const { status } = await appPatch('/artist/999999', data);
 
           expect(status).to.equal(404);
         } catch (err) {

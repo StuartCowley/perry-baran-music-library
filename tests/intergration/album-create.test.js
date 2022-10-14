@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
-const { post } = require('../helpers/requestHelpers');
+const { appPost } = require('../helpers/requestHelpers');
 const { albumFactory } = require('../helpers/dataFactory');
 const { setupArtist, tearDown } = require('../helpers/setupHelpers');
 
@@ -34,7 +34,7 @@ describe('create album', () => {
           const { id: artistId } = artists[0];
           const data = albumFactory();
 
-          const { status } = await post(`/artist/${artistId}/album`, data);
+          const { status } = await appPost(`/artist/${artistId}/album`, data);
 
           expect(status).to.equal(201);
 
@@ -53,7 +53,7 @@ describe('create album', () => {
       it('returns a 404 if the artist is not in the database', async () => {
         try {
           const data = albumFactory();
-          const { status } = await post(`/artist/999999999/album`, data);
+          const { status } = await appPost(`/artist/999999999/album`, data);
 
           expect(status).to.equal(404);
         } catch (err) {

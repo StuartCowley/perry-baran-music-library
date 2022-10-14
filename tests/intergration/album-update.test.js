@@ -5,7 +5,7 @@ const {
   setupAlbum,
   tearDown,
 } = require('../helpers/setupHelpers');
-const { patch } = require('../helpers/requestHelpers');
+const { appPatch } = require('../helpers/requestHelpers');
 const { albumFactory } = require('../helpers/dataFactory');
 
 describe('update album', () => {
@@ -42,7 +42,7 @@ describe('update album', () => {
           const { id: albumId } = albums[0];
           const data = albumFactory();
 
-          const { status } = await patch(`/album/${albumId}`, data);
+          const { status } = await appPatch(`/album/${albumId}`, data);
 
           expect(status).to.equal(200);
 
@@ -62,7 +62,7 @@ describe('update album', () => {
     it('returns a 404 if the album is not in the database', async () => {
       try {
         const data = albumFactory();
-        const { status } = await patch('/album/999999', data);
+        const { status } = await appPatch('/album/999999', data);
 
         expect(status).to.equal(404);
       } catch (err) {
