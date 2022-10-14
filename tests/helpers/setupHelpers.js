@@ -1,11 +1,11 @@
-const { artistFactory, albumFactory, songFactory } = require('./dataFactory');
+const dataFactory = require('./dataFactory');
 
 const setupArtist = async (db, entries = 1, data = [{}]) => {
   try {
     for (let i = 0; i < entries; i++) {
-      const { name, genre } = artistFactory(data[i]);
+      const { name, genre } = dataFactory.artistFactory(data[i]);
 
-      await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+      await db.query(`INSERT INTO Artist (name, genre) VALUES(?, ?)`, [
         name,
         genre,
       ]);
@@ -20,7 +20,7 @@ const setupAlbum = async (db, artist, entries = 1, data = [{}]) => {
 
   try {
     for (let i = 0; i < entries; i++) {
-      const { name, year } = albumFactory(data[i]);
+      const { name, year } = dataFactory.albumFactory(data[i]);
 
       await db.query(
         `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
@@ -37,7 +37,7 @@ const setupSong = async (db, album, entries = 1, data = [{}]) => {
 
   try {
     for (let i = 0; i < entries; i++) {
-      const { name, position } = songFactory(data[i]);
+      const { name, position } = dataFactory.songFactory(data[i]);
 
       await db.query(
         `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
