@@ -84,10 +84,16 @@ To run the server use:
 $ npm start
 ```
 
-To run unit tests use:
+To run all tests use:
 
 ```
 $ npm test
+```
+
+To run just unit tests use:
+
+```
+$ npm run unit-test
 ```
 
 To run prettier use:
