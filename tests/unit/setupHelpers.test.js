@@ -12,26 +12,12 @@ describe('sinon', () => {
     query: () => {},
     close: () => {},
   };
-  let data;
 
   afterEach(() => {
     sinon.restore();
   });
 
   describe('setupArtist', () => {
-    beforeEach(() => {
-      data = [
-        {
-          name: 'fake artist',
-          genre: 'fake genre',
-        },
-        {
-          name: 'fake artist 2',
-          genre: ' fake genre 2',
-        },
-      ];
-    });
-
     describe('spys', () => {
       it('calls once by default', async () => {
         try {
@@ -62,7 +48,18 @@ describe('sinon', () => {
       });
     });
 
-    describe('stub', () => {
+    describe('stubs', () => {
+      const data = [
+        {
+          name: 'fake artist',
+          genre: 'fake genre',
+        },
+        {
+          name: 'fake artist 2',
+          genre: ' fake genre 2',
+        },
+      ];
+
       it('called once', async () => {
         try {
           const factoryStub = sinon
@@ -112,22 +109,7 @@ describe('sinon', () => {
   });
 
   describe('setupAlbum', () => {
-    let artist;
-
-    beforeEach(() => {
-      data = [
-        {
-          name: 'fake album',
-          year: 2000,
-        },
-        {
-          name: 'fake album 2',
-          year: 2001,
-        },
-      ];
-
-      artist = { id: 0 };
-    });
+    const artist = { id: 0 };
 
     describe('spys', () => {
       it('called once by default', async () => {
@@ -160,6 +142,17 @@ describe('sinon', () => {
     });
 
     describe('stubs', () => {
+      const data = [
+        {
+          name: 'fake album',
+          year: 2000,
+        },
+        {
+          name: 'fake album 2',
+          year: 2001,
+        },
+      ];
+
       it('called once', async () => {
         try {
           const dbStub = sinon.stub(db, 'query');
@@ -209,25 +202,10 @@ describe('sinon', () => {
   });
 
   describe('setupSong', () => {
-    let album;
-
-    beforeEach(() => {
-      data = [
-        {
-          name: 'fake song',
-          position: 0,
-        },
-        {
-          name: 'fake song 2',
-          position: 1,
-        },
-      ];
-
-      album = {
-        id: 0,
-        artistId: 0,
-      };
-    });
+    const album = {
+      id: 0,
+      artistId: 0,
+    };
 
     describe('spys', () => {
       it('called once by default', async () => {
@@ -260,6 +238,17 @@ describe('sinon', () => {
     });
 
     describe('stubs', () => {
+      const data = [
+        {
+          name: 'fake song',
+          position: 0,
+        },
+        {
+          name: 'fake song 2',
+          position: 1,
+        },
+      ];
+
       it('called once', async () => {
         try {
           const dbStub = sinon.stub(db, 'query');
