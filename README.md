@@ -26,6 +26,7 @@ Created as part of the Manchester Codes full-stack web development boot-camp.
 - [Chai](https://www.npmjs.com/package/chai)
 - [Supertest](https://www.npmjs.com/package/supertest)
 - [Faker](https://www.npmjs.com/package/@faker-js/faker)
+- [sinon](https://www.npmjs.com/package/sinon)
 
 ## Setup
 

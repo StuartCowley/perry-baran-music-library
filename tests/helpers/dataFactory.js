@@ -15,9 +15,16 @@ const albumFactory = (options = {}) => {
 };
 
 const songFactory = (options = {}) => {
+  let position;
+  if (options.position || options.position === 0) {
+    position = options.position;
+  } else {
+    position = faker.datatype.number({ min: 0, max: 20 });
+  }
+
   return {
     name: options.name || faker.lorem.word(),
-    position: options.position || faker.datatype.number({ min: 0, max: 20 }),
+    position,
   };
 };
 

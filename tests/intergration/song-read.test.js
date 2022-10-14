@@ -26,7 +26,7 @@ describe('read song', () => {
       for (let i = 0; i < albumLoop; i++) {
         await setupAlbum(db, artists[i]);
       }
-      
+
       [albums] = await db.query('SELECT * from Album');
 
       //adds 2 songs to the database to all but the last album

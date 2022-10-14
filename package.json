@@ -6,6 +6,7 @@
   "scripts": {
     "pretest": "node utils/create-database.js test",
     "test": "mocha tests/**/*.js --exit --recursive --timeout 60000 --file ./tests/test-setup.js",
+    "unit-test": "mocha tests/unit/*.js --exit --recursive",
     "posttest": "node utils/drop-database.js",
     "prestart": "node utils/create-database.js",
     "start": "nodemon -r dotenv/config index.js",
@@ -29,6 +30,7 @@
     "eslint": "^8.24.0",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.20",
+    "sinon": "^14.0.1",
     "supertest": "^6.2.4"
   },
   "dependencies": {

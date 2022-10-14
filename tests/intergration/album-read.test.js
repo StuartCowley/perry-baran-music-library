@@ -82,13 +82,13 @@ describe('read album', () => {
       it('returns all albums records of an artist in the database', async () => {
         try {
           const { id: artistId } = artists[0];
-          
+
           const { status, body } = await get(`/artist/${artistId}/album`);
 
           const expected = albums.filter(
             (album) => album.artistId === artistId
           );
-          
+
           expect(status).to.equal(200);
           expect(body.length).to.equal(expected.length);
           expect(body).to.deep.equal(expected);

@@ -21,7 +21,7 @@ const setupAlbum = async (db, artist, entries = 1, data = [{}]) => {
   try {
     for (let i = 0; i < entries; i++) {
       const { name, year } = albumFactory(data[i]);
-      
+
       await db.query(
         `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
         [name, year, artistId]
@@ -33,8 +33,8 @@ const setupAlbum = async (db, artist, entries = 1, data = [{}]) => {
 };
 
 const setupSong = async (db, album, entries = 1, data = [{}]) => {
-  const { id: albumId, artistId } = album; 
- 
+  const { id: albumId, artistId } = album;
+
   try {
     for (let i = 0; i < entries; i++) {
       const { name, position } = songFactory(data[i]);
