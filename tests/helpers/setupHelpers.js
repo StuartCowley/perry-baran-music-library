@@ -1,80 +1,48 @@
 const { artistFactory, albumFactory, songFactory } = require('./dataFactory');
 
-const createArtist = async (db, data) => {
-  try {
-    await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
-      data.name,
-      data.genre,
-    ]);
-  } catch (err) {
-    throw new Error(err);
-  }
-};
-
-const setupArtist = async (db, entries) => {
+const setupArtist = async (db, entries = 1, data = [{}]) => {
   try {
     for (let i = 0; i < entries; i++) {
-      const data = artistFactory();
-      await createArtist(db, data);
+      const { name, genre } = artistFactory(data[i]);
+
+      await db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+        name,
+        genre,
+      ]);
     }
   } catch (err) {
     throw new Error(err);
   }
 };
 
-const createAlbum = async (db, data, artist) => {
+const setupAlbum = async (db, artist, entries = 1, data = [{}]) => {
+  const { id: artistId } = artist;
+
   try {
-    const { id: artistId } = artist
-
-    await db.query(
-      `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
-      [data.name, data.year, artistId]
-    );
-  } catch (err) {
-    throw new Error(err);
-  }
-}
-
-const setupAlbum = async (db, artists) => {
-  try {
-    const { length } = artists;
-    for (let i = 0; i < length; i++) {
-      const entries = Math.floor(Math.random() * 5) + 1;
-
-      for (let j = 0; j < entries; j++) {
-        const data = albumFactory();
-        await createAlbum(db, data, artists[i]);
-      }
+    for (let i = 0; i < entries; i++) {
+      const { name, year } = albumFactory(data[i]);
+      
+      await db.query(
+        `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
+        [name, year, artistId]
+      );
     }
   } catch (err) {
     throw new Error(err);
   }
 };
 
-const createSong = async (db, data, album) => {
+const setupSong = async (db, album, entries = 1, data = [{}]) => {
+  const { id: albumId, artistId } = album; 
+ 
   try {
-    const { id: albumId, artistId } = album;
+    for (let i = 0; i < entries; i++) {
+      const { name, position } = songFactory(data[i]);
 
-    await db.query(
-      `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-      [data.name, data.position, albumId, artistId]
-    );
-  } catch (err) {
-    throw new Error(err);
-  }
-}
-
-const setupSong = async (db, albums) => {
-  try {
-    const { length } = albums;
-    for (let i = 0; i < length; i++) {
-      const entries = Math.floor(Math.random() * 5) + 1;
-
-      for (let j = 0; j < entries; j++) {
-        const data = songFactory();
-
-        await createSong(db, data, albums[i]);
-      }
+      await db.query(
+        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
+        [name, position, albumId, artistId]
+      );
     }
   } catch (err) {
     throw new Error(err);
@@ -92,4 +60,4 @@ const tearDown = async (db) => {
   }
 };
 
-module.exports = { setupArtist, setupAlbum, setupSong, createArtist, createAlbum, createSong, tearDown };
+module.exports = { setupArtist, setupAlbum, setupSong, tearDown };

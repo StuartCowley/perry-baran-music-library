@@ -9,7 +9,7 @@ const {
   tearDown,
 } = require('../helpers/setupHelpers');
 
-describe('read song', () => {
+describe('update song', () => {
   let db;
   let artists;
   let albums;
@@ -19,13 +19,13 @@ describe('read song', () => {
     try {
       db = await getDb();
 
-      await setupArtist(db, 3);
+      await setupArtist(db);
       [artists] = await db.query('SELECT * from Artist');
 
-      await setupAlbum(db, artists);
+      await setupAlbum(db, artists[0]);
       [albums] = await db.query('SELECT * from Album');
 
-      await setupSong(db, albums);
+      await setupSong(db, albums[0], 2);
       [songs] = await db.query('SELECT * from Song');
     } catch (err) {
       throw new Error(err);

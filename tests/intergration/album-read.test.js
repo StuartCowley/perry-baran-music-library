@@ -3,10 +3,8 @@ const getDb = require('../../src/services/db');
 const {
   setupArtist,
   setupAlbum,
-  createArtist,
   tearDown,
 } = require('../helpers/setupHelpers');
-const { albumFactory } = require('../helpers/dataFactory');
 const { get } = require('../helpers/requestHelpers');
 
 describe('read album', () => {
@@ -21,7 +19,8 @@ describe('read album', () => {
       await setupArtist(db, 3);
       [artists] = await db.query('SELECT * from Artist');
 
-      await setupAlbum(db, artists);
+      await setupAlbum(db, artists[0], 2);
+      await setupAlbum(db, artists[1]);
       [albums] = await db.query('SELECT * from Album');
     } catch (err) {
       throw new Error(err);
@@ -83,12 +82,13 @@ describe('read album', () => {
       it('returns all albums records of an artist in the database', async () => {
         try {
           const { id: artistId } = artists[0];
+          
+          const { status, body } = await get(`/artist/${artistId}/album`);
+
           const expected = albums.filter(
             (album) => album.artistId === artistId
           );
-
-          const { status, body } = await get(`/artist/${artistId}/album`);
-
+          
           expect(status).to.equal(200);
           expect(body.length).to.equal(expected.length);
           expect(body).to.deep.equal(expected);
@@ -99,11 +99,6 @@ describe('read album', () => {
 
       it('return a 404 if no albums exists for that artist in the database', async () => {
         try {
-          const data = albumFactory();
-
-          await createArtist(db, data);
-          [artists] = await db.query('SELECT * from Artist');
-
           const { id: artistId } = artists[artists.length - 1];
           const { status } = await get(`/artist/${artistId}/album`);
 

@@ -12,7 +12,7 @@ describe('update artist', () => {
     try {
       db = await getDb();
 
-      await setupArtist(db, 3);
+      await setupArtist(db, 2);
       [artists] = await db.query('SELECT * FROM Artist');
     } catch (err) {
       throw new Error(err);

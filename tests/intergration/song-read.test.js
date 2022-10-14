@@ -1,13 +1,10 @@
 const { expect } = require('chai');
 const getDb = require('../../src/services/db');
 const { get } = require('../helpers/requestHelpers');
-const { songFactory } = require('../helpers/dataFactory');
 const {
   setupArtist,
   setupAlbum,
   setupSong,
-  createArtist,
-  createAlbum,
   tearDown,
 } = require('../helpers/setupHelpers');
 
@@ -24,10 +21,20 @@ describe('read song', () => {
       await setupArtist(db, 3);
       [artists] = await db.query('SELECT * from Artist');
 
-      await setupAlbum(db, artists);
+      //add an album to the database to all but the last artist
+      const albumLoop = artists.length - 1;
+      for (let i = 0; i < albumLoop; i++) {
+        await setupAlbum(db, artists[i]);
+      }
+      
       [albums] = await db.query('SELECT * from Album');
 
-      await setupSong(db, albums);
+      //adds 2 songs to the database to all but the last album
+      const songLoop = albums.length - 1;
+      for (let i = 0; i < songLoop; i++) {
+        await setupSong(db, albums[i], 2);
+      }
+
       [songs] = await db.query('SELECT * from Song');
     } catch (err) {
       throw new Error(err);
@@ -59,7 +66,7 @@ describe('read song', () => {
 
     describe('/song/{songId}', () => {
       describe('GET', () => {
-        it('returns a sing song with the correct id', async () => {
+        it('returns a song with the correct id', async () => {
           try {
             const expected = songs[0];
             const { status, body } = await get(`/song/${expected.id}`);
@@ -105,11 +112,6 @@ describe('read song', () => {
 
         it('return a 404 if no songs exists for that artist in the database', async () => {
           try {
-            const data = songFactory();
-
-            await createArtist(db, data);
-            [artists] = await db.query('SELECT * from Artist');
-
             const { id: artistId } = artists[artists.length - 1];
             const { status } = await get(`/artist/${artistId}/song`);
 
@@ -153,15 +155,6 @@ describe('read song', () => {
 
         it('return a 404 if no songs exists for that album in the database', async () => {
           try {
-            const data = songFactory();
-
-            await createArtist(db, data);
-            [artists] = await db.query('SELECT * from Artist');
-            const artist = artists[artists.length - 1];
-
-            await createAlbum(db, data, artist);
-            [albums] = await db.query('SELECT * from Artist');
-
             const { id: albumId } = albums[albums.length - 1];
             const { status } = await get(`/album/${albumId}/song`);
 

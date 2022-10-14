@@ -11,7 +11,7 @@ describe('delete artist', () => {
     try {
       db = await getDb();
 
-      await setupArtist(db, 3);
+      await setupArtist(db, 2);
       [artists] = await db.query('SELECT * from Artist');
     } catch (err) {
       throw new Error(err);
@@ -41,6 +41,10 @@ describe('delete artist', () => {
           );
 
           expect(!!deletedArtistRecord).to.be.false;
+
+          const [updatedArtists] = await db.query('SELECT * from Artist');
+
+          expect(updatedArtists.length).to.equal(artists.length - 1);
         } catch (err) {
           throw new Error(err);
         }

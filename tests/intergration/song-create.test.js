@@ -17,10 +17,10 @@ describe('create song', () => {
     try {
       db = await getDb();
 
-      await setupArtist(db, 3);
+      await setupArtist(db);
       [artists] = await db.query('SELECT * FROM Artist');
 
-      await setupAlbum(db, artists);
+      await setupAlbum(db, artists[0], 2);
       [albums] = await db.query('SELECT * FROM Album');
     } catch (err) {
       throw new Error(err);
@@ -40,13 +40,13 @@ describe('create song', () => {
       it('creates a new song in the database if the album exists', async () => {
         try {
           const { id: albumId } = albums[0];
-          const { id: artistId } = artists[0];
           const data = songFactory();
 
           const { status } = await post(`/album/${albumId}/song`, data);
 
           expect(status).to.equal(201);
 
+          const { id: artistId } = artists[0];
           const [[songEntries]] = await db.query(
             `SELECT * FROM Song WHERE name = ?`,
             [data.name]
