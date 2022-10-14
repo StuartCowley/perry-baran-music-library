@@ -34,63 +34,79 @@ describe('sinon', () => {
 
     describe('spys', () => {
       it('calls once by default', async () => {
-        const factorySpy = sinon.spy(dataFactory, 'artistFactory');
-        const dbSpy = sinon.spy(db, 'query');
+        try {
+          const factorySpy = sinon.spy(dataFactory, 'artistFactory');
+          const dbSpy = sinon.spy(db, 'query');
 
-        await setupArtist(db);
+          await setupArtist(db);
 
-        sinon.assert.calledOnce(factorySpy);
-        sinon.assert.calledOnce(dbSpy);
+          sinon.assert.calledOnce(factorySpy);
+          sinon.assert.calledOnce(dbSpy);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('can be called multple times', async () => {
-        const factorySpy = sinon.spy(dataFactory, 'artistFactory');
-        const dbSpy = sinon.spy(db, 'query');
+        try {
+          const factorySpy = sinon.spy(dataFactory, 'artistFactory');
+          const dbSpy = sinon.spy(db, 'query');
 
-        await setupArtist(db, 2);
+          await setupArtist(db, 2);
 
-        sinon.assert.calledTwice(factorySpy);
-        sinon.assert.calledTwice(dbSpy);
+          sinon.assert.calledTwice(factorySpy);
+          sinon.assert.calledTwice(dbSpy);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
 
     describe('stub', () => {
       it('called once', async () => {
-        const factoryStub = sinon
-          .stub(dataFactory, 'artistFactory')
-          .callsFake((data) => data);
-        const dbStub = sinon.stub(db, 'query');
+        try {
+          const factoryStub = sinon
+            .stub(dataFactory, 'artistFactory')
+            .callsFake((data) => data);
+          const dbStub = sinon.stub(db, 'query');
 
-        await setupArtist(db, 1, data);
+          await setupArtist(db, 1, data);
 
-        sinon.assert.calledWith(factoryStub, data[0]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Artist (name, genre) VALUES(?, ?)`,
-          [data[0].name, data[0].genre]
-        );
+          sinon.assert.calledWith(factoryStub, data[0]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Artist (name, genre) VALUES(?, ?)`,
+            [data[0].name, data[0].genre]
+          );
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('called multiple times', async () => {
-        const dbStub = sinon.stub(db, 'query');
-        const factoryStub = sinon
-          .stub(dataFactory, 'artistFactory')
-          .callsFake((data) => data);
+        try {
+          const dbStub = sinon.stub(db, 'query');
+          const factoryStub = sinon
+            .stub(dataFactory, 'artistFactory')
+            .callsFake((data) => data);
 
-        await setupArtist(db, 2, data);
+          await setupArtist(db, 2, data);
 
-        sinon.assert.calledWith(factoryStub, data[0]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Artist (name, genre) VALUES(?, ?)`,
-          [data[0].name, data[0].genre]
-        );
-        sinon.assert.calledWith(factoryStub, data[1]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Artist (name, genre) VALUES(?, ?)`,
-          [data[1].name, data[1].genre]
-        );
+          sinon.assert.calledWith(factoryStub, data[0]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Artist (name, genre) VALUES(?, ?)`,
+            [data[0].name, data[0].genre]
+          );
+          sinon.assert.calledWith(factoryStub, data[1]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Artist (name, genre) VALUES(?, ?)`,
+            [data[1].name, data[1].genre]
+          );
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });
@@ -115,63 +131,79 @@ describe('sinon', () => {
 
     describe('spys', () => {
       it('called once by default', async () => {
-        const factorySpy = sinon.spy(dataFactory, 'albumFactory');
-        const dbSpy = sinon.spy(db, 'query');
+        try {
+          const factorySpy = sinon.spy(dataFactory, 'albumFactory');
+          const dbSpy = sinon.spy(db, 'query');
 
-        await setupAlbum(db, artist);
+          await setupAlbum(db, artist);
 
-        sinon.assert.calledOnce(factorySpy);
-        sinon.assert.calledOnce(dbSpy);
+          sinon.assert.calledOnce(factorySpy);
+          sinon.assert.calledOnce(dbSpy);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('can be called multiple times', async () => {
-        const factorySpy = sinon.spy(dataFactory, 'albumFactory');
-        const dbSpy = sinon.spy(db, 'query');
+        try {
+          const factorySpy = sinon.spy(dataFactory, 'albumFactory');
+          const dbSpy = sinon.spy(db, 'query');
 
-        await setupAlbum(db, artist, 2);
+          await setupAlbum(db, artist, 2);
 
-        sinon.assert.calledTwice(factorySpy);
-        sinon.assert.calledTwice(dbSpy);
+          sinon.assert.calledTwice(factorySpy);
+          sinon.assert.calledTwice(dbSpy);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
 
     describe('stubs', () => {
       it('called once', async () => {
-        const dbStub = sinon.stub(db, 'query');
-        const factoryStub = sinon
-          .stub(dataFactory, 'albumFactory')
-          .callsFake((data) => data);
+        try {
+          const dbStub = sinon.stub(db, 'query');
+          const factoryStub = sinon
+            .stub(dataFactory, 'albumFactory')
+            .callsFake((data) => data);
 
-        await setupAlbum(db, artist, 1, data);
+          await setupAlbum(db, artist, 1, data);
 
-        sinon.assert.calledWith(factoryStub, data[0]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
-          [data[0].name, data[0].year, artist.id]
-        );
+          sinon.assert.calledWith(factoryStub, data[0]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
+            [data[0].name, data[0].year, artist.id]
+          );
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('multiple times', async () => {
-        const dbStub = sinon.stub(db, 'query');
-        const factoryStub = sinon
-          .stub(dataFactory, 'albumFactory')
-          .callsFake((data) => data);
+        try {
+          const dbStub = sinon.stub(db, 'query');
+          const factoryStub = sinon
+            .stub(dataFactory, 'albumFactory')
+            .callsFake((data) => data);
 
-        await setupAlbum(db, artist, 2, data);
+          await setupAlbum(db, artist, 2, data);
 
-        sinon.assert.calledWith(factoryStub, data[0]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
-          [data[0].name, data[0].year, artist.id]
-        );
-        sinon.assert.calledWith(factoryStub, data[1]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
-          [data[1].name, data[1].year, artist.id]
-        );
+          sinon.assert.calledWith(factoryStub, data[0]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
+            [data[0].name, data[0].year, artist.id]
+          );
+          sinon.assert.calledWith(factoryStub, data[1]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
+            [data[1].name, data[1].year, artist.id]
+          );
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });
@@ -199,86 +231,110 @@ describe('sinon', () => {
 
     describe('spys', () => {
       it('called once by default', async () => {
-        const factorySpy = sinon.spy(dataFactory, 'songFactory');
-        const dbSpy = sinon.spy(db, 'query');
+        try {
+          const factorySpy = sinon.spy(dataFactory, 'songFactory');
+          const dbSpy = sinon.spy(db, 'query');
 
-        await setupSong(db, album);
+          await setupSong(db, album);
 
-        sinon.assert.calledOnce(factorySpy);
-        sinon.assert.calledOnce(dbSpy);
+          sinon.assert.calledOnce(factorySpy);
+          sinon.assert.calledOnce(dbSpy);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('can be called multiple times', async () => {
-        const factorySpy = sinon.spy(dataFactory, 'songFactory');
-        const dbSpy = sinon.spy(db, 'query');
+        try {
+          const factorySpy = sinon.spy(dataFactory, 'songFactory');
+          const dbSpy = sinon.spy(db, 'query');
 
-        await setupSong(db, album, 2);
+          await setupSong(db, album, 2);
 
-        sinon.assert.calledTwice(factorySpy);
-        sinon.assert.calledTwice(dbSpy);
+          sinon.assert.calledTwice(factorySpy);
+          sinon.assert.calledTwice(dbSpy);
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
 
     describe('stubs', () => {
       it('called once', async () => {
-        const dbStub = sinon.stub(db, 'query');
-        const factoryStub = sinon
-          .stub(dataFactory, 'songFactory')
-          .callsFake((data) => data);
+        try {
+          const dbStub = sinon.stub(db, 'query');
+          const factoryStub = sinon
+            .stub(dataFactory, 'songFactory')
+            .callsFake((data) => data);
 
-        await setupSong(db, album, 1, data);
+          await setupSong(db, album, 1, data);
 
-        sinon.assert.calledWith(factoryStub, data[0]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-          [data[0].name, data[0].position, album.id, album.artistId]
-        );
+          sinon.assert.calledWith(factoryStub, data[0]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
+            [data[0].name, data[0].position, album.id, album.artistId]
+          );
+        } catch (err) {
+          throw new Error(err);
+        }
       });
 
       it('called multiple times', async () => {
-        const dbStub = sinon.stub(db, 'query');
-        const factoryStub = sinon
-          .stub(dataFactory, 'songFactory')
-          .callsFake((data) => data);
+        try {
+          const dbStub = sinon.stub(db, 'query');
+          const factoryStub = sinon
+            .stub(dataFactory, 'songFactory')
+            .callsFake((data) => data);
 
-        await setupSong(db, album, 2, data);
+          await setupSong(db, album, 2, data);
 
-        sinon.assert.calledWith(factoryStub, data[0]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-          [data[0].name, data[0].position, album.id, album.artistId]
-        );
-        sinon.assert.calledWith(factoryStub, data[1]);
-        sinon.assert.calledWith(
-          dbStub,
-          `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
-          [data[1].name, data[1].position, album.id, album.artistId]
-        );
+          sinon.assert.calledWith(factoryStub, data[0]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
+            [data[0].name, data[0].position, album.id, album.artistId]
+          );
+          sinon.assert.calledWith(factoryStub, data[1]);
+          sinon.assert.calledWith(
+            dbStub,
+            `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
+            [data[1].name, data[1].position, album.id, album.artistId]
+          );
+        } catch (err) {
+          throw new Error(err);
+        }
       });
     });
   });
 
   describe('tearDown', () => {
     it('spys', async () => {
-      const querySpy = sinon.spy(db, 'query');
-      const closeSpy = sinon.spy(db, 'close');
+      try {
+        const querySpy = sinon.spy(db, 'query');
+        const closeSpy = sinon.spy(db, 'close');
 
-      await tearDown(db);
+        await tearDown(db);
 
-      sinon.assert.calledThrice(querySpy);
-      sinon.assert.calledOnce(closeSpy);
+        sinon.assert.calledThrice(querySpy);
+        sinon.assert.calledOnce(closeSpy);
+      } catch (err) {
+        throw new Error(err);
+      }
     });
 
     it('stubs', async () => {
-      const queryStub = sinon.stub(db, 'query');
+      try {
+        const queryStub = sinon.stub(db, 'query');
 
-      await tearDown(db);
+        await tearDown(db);
 
-      sinon.assert.calledWith(queryStub, 'DELETE FROM Artist');
-      sinon.assert.calledWith(queryStub, 'DELETE FROM Album');
-      sinon.assert.calledWith(queryStub, 'DELETE FROM Song');
+        sinon.assert.calledWith(queryStub, 'DELETE FROM Artist');
+        sinon.assert.calledWith(queryStub, 'DELETE FROM Album');
+        sinon.assert.calledWith(queryStub, 'DELETE FROM Song');
+      } catch (err) {
+        throw new Error(err);
+      }
     });
   });
 });

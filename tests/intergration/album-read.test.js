@@ -79,7 +79,7 @@ describe('read album', () => {
 
   describe('artist/{artistId}/album', () => {
     describe('GET', () => {
-      it('returns all albums records of an artist in the database', async () => {
+      it('returns all album records of an artist in the database', async () => {
         try {
           const { id: artistId } = artists[0];
 

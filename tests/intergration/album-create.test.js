@@ -12,7 +12,7 @@ describe('create album', () => {
     try {
       db = await getDb();
 
-      await setupArtist(db, 2);
+      await setupArtist(db);
       [artists] = await db.query('SELECT * FROM Artist');
     } catch (err) {
       throw new Error(err);
