@@ -1,7 +1,7 @@
-const { getDb } = require('../services/db');
+const connectDb = require('../services/db');
 
 exports.post = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { name, position } = req.body;
   const { albumId } = req.params;
 
@@ -28,7 +28,7 @@ exports.post = async (req, res) => {
 };
 
 exports.getAll = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
 
   try {
     const [songs] = await db.query('SELECT * FROM Song');
@@ -41,7 +41,7 @@ exports.getAll = async (req, res) => {
 };
 
 exports.getById = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { songId } = req.params;
 
   try {
@@ -62,7 +62,7 @@ exports.getById = async (req, res) => {
 };
 
 exports.getAllByArtistId = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { artistId } = req.params;
 
   try {
@@ -83,7 +83,7 @@ exports.getAllByArtistId = async (req, res) => {
 };
 
 exports.getAllByAlbumId = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { albumId } = req.params;
 
   try {
@@ -104,7 +104,7 @@ exports.getAllByAlbumId = async (req, res) => {
 };
 
 exports.patch = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { songId } = req.params;
   const data = req.body;
 
@@ -120,14 +120,14 @@ exports.patch = async (req, res) => {
       res.status(200).send();
     }
   } catch (err) {
-    res.staus(500).send();
+    res.status(500).send();
   }
 
   db.close();
 };
 
 exports.delete = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { songId } = req.params;
 
   try {

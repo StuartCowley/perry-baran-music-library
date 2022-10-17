@@ -1,8 +1,8 @@
 const sinon = require('sinon');
-const album = require('../../src/controllers/album');
+const song = require('../../src/controllers/song');
 const connectDb = require('../../src/services/db');
 
-describe('album controller', () => {
+describe('song controller', () => {
   const res = {
     status: () => {},
   };
@@ -16,12 +16,13 @@ describe('album controller', () => {
   };
   const req = {
     params: {
-      albumId: 0,
       artistId: 0,
+      albumId: 0,
+      songId: 0,
     },
     body: {
       name: 'name',
-      year: 2000,
+      position: 0,
     },
   };
 
@@ -43,22 +44,23 @@ describe('album controller', () => {
 
   describe('post', () => {
     it('returns 201', async () => {
-      const { name, year } = req.body;
-      const { artistId } = req.params;
-      queryStub.returns([[true]]);
+      const { name, position } = req.body;
+      const { albumId } = req.params;
+      const artistId = 0;
+      queryStub.returns([[{ artistId }]]);
 
-      await album.post(req, res);
+      await song.post(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledTwice(queryStub);
-      sinon.assert.calledWith(queryStub, `SELECT * FROM Artist WHERE id = ?`, [
-        artistId,
+      sinon.assert.calledWith(queryStub, `SELECT * FROM Album WHERE id = ?`, [
+        albumId,
       ]);
       sinon.assert.calledWith(
         queryStub,
-        `INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`,
-        [name, year, artistId]
+        `INSERT INTO Song (name, position, albumId, artistId) VALUES (?, ?, ?, ?)`,
+        [name, position, albumId, artistId]
       );
 
       sinon.assert.calledOnce(statusStub);
@@ -68,16 +70,16 @@ describe('album controller', () => {
     });
 
     it('returns 404', async () => {
-      const { artistId } = req.params;
+      const { albumId } = req.params;
       queryStub.returns([[false]]);
 
-      await album.post(req, res);
+      await song.post(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `SELECT * FROM Artist WHERE id = ?`, [
-        artistId,
+      sinon.assert.calledWith(queryStub, `SELECT * FROM Album WHERE id = ?`, [
+        albumId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -87,16 +89,16 @@ describe('album controller', () => {
     });
 
     it('returns 500', async () => {
-      const { artistId } = req.params;
+      const { albumId } = req.params;
       queryStub.throws();
 
-      await album.post(req, res);
+      await song.post(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `SELECT * FROM Artist WHERE id = ?`, [
-        artistId,
+      sinon.assert.calledWith(queryStub, `SELECT * FROM Album WHERE id = ?`, [
+        albumId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -112,12 +114,12 @@ describe('album controller', () => {
       const jsonStub = sinon.stub(status, 'json');
       queryStub.returns([data]);
 
-      await album.getAll(req, res);
+      await song.getAll(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, 'SELECT * FROM Album');
+      sinon.assert.calledWith(queryStub, 'SELECT * FROM Song');
 
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 200);
@@ -131,12 +133,12 @@ describe('album controller', () => {
     it('returns 500', async () => {
       queryStub.throws();
 
-      await album.getAll(req, res);
+      await song.getAll(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, 'SELECT * FROM Album');
+      sinon.assert.calledWith(queryStub, 'SELECT * FROM Song');
 
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 500);
@@ -151,13 +153,13 @@ describe('album controller', () => {
       const jsonStub = sinon.stub(status, 'json');
       queryStub.returns([[data]]);
 
-      await album.getById(req, res);
+      await song.getById(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `SELECT * FROM Album WHERE id = ?`, [
-        req.params.albumId,
+      sinon.assert.calledWith(queryStub, `SELECT * FROM Song WHERE id = ?`, [
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -172,13 +174,13 @@ describe('album controller', () => {
     it('returns 404', async () => {
       queryStub.returns([[false]]);
 
-      await album.getById(req, res);
+      await song.getById(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `SELECT * FROM Album WHERE id = ?`, [
-        req.params.albumId,
+      sinon.assert.calledWith(queryStub, `SELECT * FROM Song WHERE id = ?`, [
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -190,13 +192,13 @@ describe('album controller', () => {
     it('returns 500', async () => {
       queryStub.throws();
 
-      await album.getById(req, res);
+      await song.getById(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `SELECT * FROM Album WHERE id = ?`, [
-        req.params.albumId,
+      sinon.assert.calledWith(queryStub, `SELECT * FROM Song WHERE id = ?`, [
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -206,20 +208,20 @@ describe('album controller', () => {
     });
   });
 
-  describe('getAllByArtistId', () => {
+  describe('gettAllByArtistId', () => {
     it('returns 200', async () => {
       const data = [{}];
       const jsonStub = sinon.stub(status, 'json');
       queryStub.returns([data]);
 
-      await album.getAllByArtistId(req, res);
+      await song.getAllByArtistId(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
       sinon.assert.calledWith(
         queryStub,
-        `SELECT * FROM Album WHERE artistId = ?`,
+        `SELECT * FROM Song WHERE artistId = ?`,
         [req.params.artistId]
       );
 
@@ -235,14 +237,14 @@ describe('album controller', () => {
     it('returns 404', async () => {
       queryStub.returns([[]]);
 
-      await album.getAllByArtistId(req, res);
+      await song.getAllByArtistId(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
       sinon.assert.calledWith(
         queryStub,
-        `SELECT * FROM Album WHERE artistId = ?`,
+        `SELECT * FROM Song WHERE artistId = ?`,
         [req.params.artistId]
       );
 
@@ -255,15 +257,82 @@ describe('album controller', () => {
     it('returns 500', async () => {
       queryStub.throws();
 
-      await album.getAllByArtistId(req, res);
+      await song.getAllByArtistId(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
       sinon.assert.calledWith(
         queryStub,
-        `SELECT * FROM Album WHERE artistId = ?`,
+        `SELECT * FROM Song WHERE artistId = ?`,
         [req.params.artistId]
+      );
+
+      sinon.assert.calledOnce(statusStub);
+      sinon.assert.calledWith(statusStub, 500);
+
+      sinon.assert.calledOnce(closeStub);
+    });
+  });
+
+  describe('getAllByAlbumId', () => {
+    it('returns 200', async () => {
+      const data = [{}];
+      const jsonStub = sinon.stub(status, 'json');
+      queryStub.returns([data]);
+
+      await song.getAllByAlbumId(req, res);
+
+      sinon.assert.calledOnce(getDbStub);
+
+      sinon.assert.calledOnce(queryStub);
+      sinon.assert.calledWith(
+        queryStub,
+        `SELECT * FROM Song WHERE albumId = ?`,
+        [req.params.albumId]
+      );
+
+      sinon.assert.calledOnce(statusStub);
+      sinon.assert.calledWith(statusStub, 200);
+
+      sinon.assert.calledOnce(jsonStub);
+      sinon.assert.calledWith(jsonStub, data);
+
+      sinon.assert.calledOnce(closeStub);
+    });
+
+    it('returns 404', async () => {
+      queryStub.returns([[]]);
+
+      await song.getAllByAlbumId(req, res);
+
+      sinon.assert.calledOnce(getDbStub);
+
+      sinon.assert.calledOnce(queryStub);
+      sinon.assert.calledWith(
+        queryStub,
+        `SELECT * FROM Song WHERE albumId = ?`,
+        [req.params.albumId]
+      );
+
+      sinon.assert.calledOnce(statusStub);
+      sinon.assert.calledWith(statusStub, 404);
+
+      sinon.assert.calledOnce(closeStub);
+    });
+
+    it('returns 500', async () => {
+      queryStub.throws();
+
+      await song.getAllByAlbumId(req, res);
+
+      sinon.assert.calledOnce(getDbStub);
+
+      sinon.assert.calledOnce(queryStub);
+      sinon.assert.calledWith(
+        queryStub,
+        `SELECT * FROM Song WHERE albumId = ?`,
+        [req.params.albumId]
       );
 
       sinon.assert.calledOnce(statusStub);
@@ -277,14 +346,14 @@ describe('album controller', () => {
     it('returns 200', async () => {
       queryStub.returns([{ affectedRows: true }]);
 
-      await album.patch(req, res);
+      await song.patch(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `UPDATE Album SET ? WHERE id = ?`, [
+      sinon.assert.calledWith(queryStub, `UPDATE Song SET ? WHERE id = ?`, [
         req.body,
-        req.params.albumId,
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -296,14 +365,14 @@ describe('album controller', () => {
     it('returns 404', async () => {
       queryStub.returns([{ affectedRows: false }]);
 
-      await album.patch(req, res);
+      await song.patch(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `UPDATE Album SET ? WHERE id = ?`, [
+      sinon.assert.calledWith(queryStub, `UPDATE Song SET ? WHERE id = ?`, [
         req.body,
-        req.params.albumId,
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -315,14 +384,14 @@ describe('album controller', () => {
     it('returns 500', async () => {
       queryStub.throws();
 
-      await album.patch(req, res);
+      await song.patch(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `UPDATE Album SET ? WHERE id = ?`, [
+      sinon.assert.calledWith(queryStub, `UPDATE Song SET ? WHERE id = ?`, [
         req.body,
-        req.params.albumId,
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -336,13 +405,13 @@ describe('album controller', () => {
     it('returns 200', async () => {
       queryStub.returns([{ affectedRows: true }]);
 
-      await album.delete(req, res);
+      await song.delete(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `DELETE FROM Album WHERE id = ?`, [
-        req.params.albumId,
+      sinon.assert.calledWith(queryStub, `DELETE FROM Song WHERE id = ?`, [
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -354,13 +423,13 @@ describe('album controller', () => {
     it('returns 404', async () => {
       queryStub.returns([{ affectedRows: false }]);
 
-      await album.delete(req, res);
+      await song.delete(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `DELETE FROM Album WHERE id = ?`, [
-        req.params.albumId,
+      sinon.assert.calledWith(queryStub, `DELETE FROM Song WHERE id = ?`, [
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
@@ -372,13 +441,13 @@ describe('album controller', () => {
     it('returns 500', async () => {
       queryStub.throws();
 
-      await album.delete(req, res);
+      await song.delete(req, res);
 
       sinon.assert.calledOnce(getDbStub);
 
       sinon.assert.calledOnce(queryStub);
-      sinon.assert.calledWith(queryStub, `DELETE FROM Album WHERE id = ?`, [
-        req.params.albumId,
+      sinon.assert.calledWith(queryStub, `DELETE FROM Song WHERE id = ?`, [
+        req.params.songId,
       ]);
 
       sinon.assert.calledOnce(statusStub);
