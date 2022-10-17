@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const getDb = require('../../src/services/db');
+const { getDb } = require('../../src/services/db');
 const { appGet } = require('../helpers/requestHelpers');
 const { setupArtist, tearDown } = require('../helpers/setupHelpers');
 

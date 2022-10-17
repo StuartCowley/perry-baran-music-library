@@ -1,7 +1,7 @@
-const getDb = require('../services/db');
+const connectDb = require('../services/db');
 
 exports.post = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { name, genre } = req.body;
 
   try {
@@ -17,8 +17,8 @@ exports.post = async (req, res) => {
   db.close();
 };
 
-exports.getAll = async (req, res) => {
-  const db = await getDb();
+exports.getAll = async (_, res) => {
+  const db = await connectDb.getDb();
   try {
     const [artists] = await db.query('SELECT * FROM Artist');
     res.status(200).json(artists);
@@ -30,7 +30,7 @@ exports.getAll = async (req, res) => {
 };
 
 exports.getById = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { artistId } = req.params;
 
   try {
@@ -51,7 +51,7 @@ exports.getById = async (req, res) => {
 };
 
 exports.patch = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { artistId } = req.params;
   const data = req.body;
 
@@ -74,7 +74,7 @@ exports.patch = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  const db = await getDb();
+  const db = await connectDb.getDb();
   const { artistId } = req.params;
 
   try {

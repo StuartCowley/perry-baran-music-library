@@ -1,4 +1,4 @@
-const getDb = require('../services/db');
+const { getDb } = require('../services/db');
 
 exports.post = async (req, res) => {
   const db = await getDb();

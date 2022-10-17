@@ -2,7 +2,7 @@ const mysql = require('mysql2/promise');
 
 const { DB_PASSWORD, DB_USER, DB_NAME, DB_HOST, DB_PORT } = process.env;
 
-module.exports = async () => {
+exports.getDb = async () => {
   try {
     const connection = await mysql.createConnection({
       host: DB_HOST,
