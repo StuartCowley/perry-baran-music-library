@@ -21,7 +21,7 @@ exports.post = async (req, res) => {
       res.status(201).send();
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err });
   }
 
   db.close();
@@ -55,7 +55,7 @@ exports.getById = async (req, res) => {
       res.status(200).json(album);
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err });
   }
 
   db.close();
@@ -76,7 +76,7 @@ exports.getAllByArtistId = async (req, res) => {
       res.status(200).json(albums);
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err });
   }
 
   db.close();
@@ -99,7 +99,7 @@ exports.patch = async (req, res) => {
       res.status(200).send();
     }
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err });
   }
 
   db.close();
@@ -121,7 +121,7 @@ exports.delete = async (req, res) => {
       res.status(200).send();
     }
   } catch (err) {
-    res.status(500).send();
+    res.status(500).json({ error: err });
   }
 
   db.close();
