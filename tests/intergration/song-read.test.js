@@ -21,19 +21,14 @@ describe('read song', () => {
       await setupArtist(db, 3);
       [artists] = await db.query('SELECT * from Artist');
 
-      //add an album to the database to all but the last artist
-      const albumLoop = artists.length - 1;
-      for (let i = 0; i < albumLoop; i++) {
-        await setupAlbum(db, artists[i]);
-      }
+      
+      await setupAlbum(db, artists[0]);
+      await setupAlbum(db, artists[1]);
+      
 
       [albums] = await db.query('SELECT * from Album');
 
-      //adds 2 songs to the database to all but the last album
-      const songLoop = albums.length - 1;
-      for (let i = 0; i < songLoop; i++) {
-        await setupSong(db, albums[i], 2);
-      }
+      await setupSong(db, albums[0], 2);
 
       [songs] = await db.query('SELECT * from Song');
     } catch (err) {

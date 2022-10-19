@@ -13,6 +13,4 @@ app.use('/album', albumRouter);
 
 app.use('/song', songRouter);
 
-console.log(' ---- APP -----');
-
 module.exports = app;

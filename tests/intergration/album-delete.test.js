@@ -19,7 +19,7 @@ describe('delete album', () => {
       await setupArtist(db);
       [artists] = await db.query('SELECT * from Artist');
 
-      await setupAlbum(db, artists[0]);
+      await setupAlbum(db, artists[0], 2);
       [albums] = await db.query('SELECT * from Album');
     } catch (err) {
       throw new Error(err);
