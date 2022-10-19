@@ -4,7 +4,7 @@ const { tearDown } = require('../helpers/setupHelpers');
 describe('tearDown', () => {
   const db = {
     query: () => {},
-    close: () => {},
+    end: () => {},
   };
 
   afterEach(() => {
@@ -14,12 +14,12 @@ describe('tearDown', () => {
   it('spys', async () => {
     try {
       const querySpy = sinon.spy(db, 'query');
-      const closeSpy = sinon.spy(db, 'close');
+      const endSpy = sinon.spy(db, 'end');
 
       await tearDown(db);
 
       sinon.assert.calledThrice(querySpy);
-      sinon.assert.calledOnce(closeSpy);
+      sinon.assert.calledOnce(endSpy);
     } catch (err) {
       throw new Error(err);
     }

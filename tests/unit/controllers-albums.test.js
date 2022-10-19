@@ -8,7 +8,7 @@ describe('album controller', () => {
   };
   const db = {
     query: () => {},
-    close: () => {},
+    end: () => {},
   };
   const status = {
     json: () => {},
@@ -27,13 +27,13 @@ describe('album controller', () => {
 
   let getDbStub;
   let queryStub;
-  let closeStub;
+  let endStub;
   let statusStub;
 
   beforeEach(() => {
     getDbStub = sinon.stub(connectDb, 'getDb').resolves(db);
     queryStub = sinon.stub(db, 'query');
-    closeStub = sinon.stub(db, 'close');
+    endStub = sinon.stub(db, 'end');
     statusStub = sinon.stub(res, 'status').returns(status);
   });
 
@@ -64,7 +64,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 201);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 404', async () => {
@@ -83,7 +83,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 404);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 500', async () => {
@@ -102,7 +102,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 500);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
   });
 
@@ -125,7 +125,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(jsonStub);
       sinon.assert.calledWith(jsonStub, data);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 500', async () => {
@@ -141,7 +141,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 500);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
   });
 
@@ -166,7 +166,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(jsonStub);
       sinon.assert.calledWith(jsonStub, data);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 404', async () => {
@@ -184,7 +184,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 404);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 500', async () => {
@@ -202,7 +202,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 500);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
   });
 
@@ -229,7 +229,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(jsonStub);
       sinon.assert.calledWith(jsonStub, data);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 404', async () => {
@@ -249,7 +249,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 404);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 500', async () => {
@@ -269,7 +269,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 500);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
   });
 
@@ -290,7 +290,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 200);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 404', async () => {
@@ -309,7 +309,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 404);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 500', async () => {
@@ -328,7 +328,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 500);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
   });
 
@@ -348,7 +348,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 200);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 404', async () => {
@@ -366,7 +366,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 404);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
 
     it('returns 500', async () => {
@@ -384,7 +384,7 @@ describe('album controller', () => {
       sinon.assert.calledOnce(statusStub);
       sinon.assert.calledWith(statusStub, 500);
 
-      sinon.assert.calledOnce(closeStub);
+      sinon.assert.calledOnce(endStub);
     });
   });
 });

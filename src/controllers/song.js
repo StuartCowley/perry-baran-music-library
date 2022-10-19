@@ -20,11 +20,11 @@ exports.post = async (req, res) => {
 
       res.status(201).send();
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.getAll = async (req, res) => {
@@ -33,11 +33,11 @@ exports.getAll = async (req, res) => {
   try {
     const [songs] = await db.query('SELECT * FROM Song');
     res.status(200).json(songs);
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.getById = async (req, res) => {
@@ -54,11 +54,11 @@ exports.getById = async (req, res) => {
     } else {
       res.status(200).json(song);
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.getAllByArtistId = async (req, res) => {
@@ -75,11 +75,11 @@ exports.getAllByArtistId = async (req, res) => {
     } else {
       res.status(200).json(songs);
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.getAllByAlbumId = async (req, res) => {
@@ -96,11 +96,11 @@ exports.getAllByAlbumId = async (req, res) => {
     } else {
       res.status(200).json(songs);
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.patch = async (req, res) => {
@@ -119,11 +119,11 @@ exports.patch = async (req, res) => {
     } else {
       res.status(200).send();
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.delete = async (req, res) => {
@@ -140,9 +140,9 @@ exports.delete = async (req, res) => {
     } else {
       res.status(200).send();
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };

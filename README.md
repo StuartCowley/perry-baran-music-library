@@ -70,12 +70,6 @@ DB_PORT=3307
 PORT=3000
 ```
 
-### Git Ignore
-
-Create a `.gitignore` file. This can be done automatically using `npx gitignore node`, or by manually creating it.
-
-Make sure that your `.gitignore` file includes `node_modules`, `.env` and `.env.test`.
-
 ## Commands
 
 To run the server use:
@@ -90,7 +84,7 @@ To run all tests use:
 $ npm test
 ```
 
-To run just unit tests use:
+To just run unit tests use:
 
 ```
 $ npm run unit-test

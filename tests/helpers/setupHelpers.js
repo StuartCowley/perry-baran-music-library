@@ -16,10 +16,9 @@ const setupArtist = async (db, entries = 1, artistData = [{}]) => {
   }
 };
 
-//artist can be either number or an object following { id: number }
 //optional albumData is an array of objects following [{ name: string, year: number }]
 const setupAlbum = async (db, artist, entries = 1, albumData = [{}]) => {
-  const artistId = typeof artist === 'number' ? artist : artist.id;
+  const { id: artistId } = artist;
 
   try {
     for (let i = 0; i < entries; i++) {
@@ -35,7 +34,6 @@ const setupAlbum = async (db, artist, entries = 1, albumData = [{}]) => {
   }
 };
 
-//album must be an object containing id and artistId
 //optional songData is an array of objects following [{ name: string, position: number }]
 const setupSong = async (db, album, entries = 1, songData = [{}]) => {
   const { id: albumId, artistId } = album;
@@ -59,7 +57,7 @@ const tearDown = async (db) => {
     await db.query('DELETE FROM Artist');
     await db.query('DELETE FROM Album');
     await db.query('DELETE FROM Song');
-    await db.close();
+    await db.end();
   } catch (err) {
     throw new Error(err);
   }

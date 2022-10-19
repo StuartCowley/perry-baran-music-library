@@ -10,11 +10,11 @@ exports.post = async (req, res) => {
       genre,
     ]);
     res.status(201).send();
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.getAll = async (_, res) => {
@@ -22,11 +22,11 @@ exports.getAll = async (_, res) => {
   try {
     const [artists] = await db.query('SELECT * FROM Artist');
     res.status(200).json(artists);
-  } catch (err) {
-    res.status(500).json(err);
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.getById = async (req, res) => {
@@ -43,11 +43,11 @@ exports.getById = async (req, res) => {
     } else {
       res.status(200).json(artist);
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.patch = async (req, res) => {
@@ -66,11 +66,11 @@ exports.patch = async (req, res) => {
     } else {
       res.status(200).send();
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
 
 exports.delete = async (req, res) => {
@@ -88,9 +88,9 @@ exports.delete = async (req, res) => {
     } else {
       res.status(200).send();
     }
-  } catch (err) {
-    res.status(500).json({ error: err });
+  } catch (error) {
+    res.status(500).json({ error });
   }
 
-  db.close();
+  db.end();
 };
